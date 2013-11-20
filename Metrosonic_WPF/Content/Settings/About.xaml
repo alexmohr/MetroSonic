@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="MetroSonic.Content.About"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel MinWidth="200">
+                <TextBlock Text="ABOUT" Style="{StaticResource Heading2}" />
+                <TextBlock
+                    Text="Subsonic Player Metro Style&#10; WARNING THIS APPLICATION IS IN A VERY EARLY STATE IT CAN'T BE USED YET AND DOES NOT FULLFILL IT PURPOSE&#10;&#10; Copyright (C) 2013-2014  Alexander Mohr&#10;&#10; This program is free software: you can redistribute it and/or modify&#10; it under the terms of the GNU General Public License as published by&#10; the Free Software Foundation, either version 3 of the License, or&#10; (at your option) any later version.&#10;&#10; This program is distributed in the hope that it will be useful,&#10; but WITHOUT ANY WARRANTY; without even the implied warranty of&#10; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#10; GNU General Public License for more details.&#10;&#10; You should have received a copy of the GNU General Public License&#10; along with this program.  If not, see http://www.gnu.org/licenses/.&#10;&#10; Contact: alex.mohr.mail@gmail.com"
+                    Margin="0,0,0,8" TextWrapping="Wrap" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

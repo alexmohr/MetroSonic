@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="MetroSonic.Pages.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid Style="{StaticResource ContentRoot}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="32*" />
+            <ColumnDefinition Width="35*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="135*" />
+            <RowDefinition Height="121*" />
+        </Grid.RowDefinitions>
+        <mui:ModernTab Layout="List" SelectedSource="/Content\Settings\SettingsAppearance.xaml" Grid.RowSpan="2"
+                       Grid.ColumnSpan="2">
+            <mui:ModernTab.Links>
+                <mui:Link DisplayName="appearance" Source="/Content\Settings\SettingsAppearance.xaml" />
+                <mui:Link DisplayName="network" Source="/Content\Settings\SettingsNetwork.xaml" />
+                <!--<mui:Link DisplayName="Save" Source="\Content\Settings\SettingsSave.xaml"/>-->
+                <mui:Link DisplayName="about" Source="\Content\Settings\About.xaml" />
+            </mui:ModernTab.Links>
+        </mui:ModernTab>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="0,75,0,0" VerticalAlignment="Top" Width="170"
+                RenderTransformOrigin="-0.04,-0.24"
+                Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Click="Button_Click" />
+    </Grid>
+</UserControl>
