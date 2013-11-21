@@ -85,5 +85,12 @@ namespace MetroSonic.Content
 
             return displayedCanvas;
         }
+
+        public static void CoverClickEvent(object sender, EventArgs e)
+        {
+            var sendingControl = (Canvas)sender;
+            var mediaItem = (MediaItem)sendingControl.Tag;
+            Constants.WindowMain.ContentSource = new Uri("/Content/Library/DetailView.xaml?id=" + mediaItem.ArtistId, UriKind.Relative);
+        }
     }
 }

@@ -12,8 +12,6 @@
             <StackPanel>
                 <TextBlock Text="Artists" Style="{StaticResource Title}" Name="Title" />
                 <WrapPanel Orientation="Horizontal" Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=ActualWidth}" Name="WrapPanel">
-                   
-
                 </WrapPanel>
             </StackPanel>
         </ScrollViewer>

@@ -70,8 +70,8 @@ namespace MetroSonic.Content.Welcome
                             LibraryManagement.GetFolder();
 
                             BuildNavigation();
-                            
-                            Constants.WindowMain.ContentSource = new Uri("/Content/Home/All.xaml", UriKind.Relative);
+
+                            Constants.WindowMain.ContentSource = new Uri("/Content/Home/AlbumPage.xaml?type=all", UriKind.Relative);
                         });
                 }
                 else
@@ -144,27 +144,27 @@ namespace MetroSonic.Content.Welcome
             welcome.Links.Add(new Link
             {
                 DisplayName = "All",
-                Source = new Uri(contentRoot + "/Home/All.xaml", UriKind.Relative)
+                Source = new Uri(contentRoot + "/Home/AlbumPage.xaml?type=all", UriKind.Relative)
             });
             welcome.Links.Add(new Link
             {
                 DisplayName = "new",
-                Source = new Uri(contentRoot + "/Home/new.xaml", UriKind.Relative)
+                Source = new Uri(contentRoot + "/Home/AlbumPage.xaml?type=new", UriKind.Relative)
             });
             welcome.Links.Add(new Link
             {
                 DisplayName = "random",
-                Source = new Uri(contentRoot + "/Home/random.xaml", UriKind.Relative)
+                Source = new Uri(contentRoot + "/Home/AlbumPage.xaml?type=random", UriKind.Relative)
             });
             welcome.Links.Add(new Link
             {
                 DisplayName = "most played",
-                Source = new Uri(contentRoot + "/Home/mostplayed.xaml", UriKind.Relative)
+                Source = new Uri(contentRoot + "/Home/AlbumPage.xaml?type=mostplayed", UriKind.Relative)
             });
             welcome.Links.Add(new Link
             {
                 DisplayName = "now playing",
-                Source = new Uri(contentRoot + "/Home/nowplaying.xaml", UriKind.Relative)
+                Source = new Uri(contentRoot + "/Home/AlbumPage.xaml?type=nowplaying", UriKind.Relative)
             });
 
             if (Constants.LoggedIn)
