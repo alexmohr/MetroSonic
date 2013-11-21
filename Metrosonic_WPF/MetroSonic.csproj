@@ -198,39 +198,11 @@
     <Compile Include="Pages\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Home\All.xaml.cs">
-      <DependentUpon>All.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Home\MostPlayed.xaml.cs">
-      <DependentUpon>MostPlayed.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Home\New.xaml.cs">
-      <DependentUpon>New.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Home\NowPlaying.xaml.cs">
-      <DependentUpon>NowPlaying.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Home\Random.xaml.cs">
-      <DependentUpon>Random.xaml</DependentUpon>
+    <Compile Include="Content\Home\AlbumPage.xaml.cs">
+      <DependentUpon>AlbumPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Page Include="Content\Home\All.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Content\Home\MostPlayed.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Content\Home\New.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Content\Home\NowPlaying.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Content\Home\Random.xaml">
+    <Page Include="Content\Home\AlbumPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

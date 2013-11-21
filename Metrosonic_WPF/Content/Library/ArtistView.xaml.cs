@@ -40,17 +40,9 @@ namespace MetroSonic.Content.Library
 
             foreach (Canvas cover in LibraryManagement.AllArtists[_folderId].Select(item => GuiDrawing.DrawCover(item.Artist, WrapPanel, item.Artist, item, Constants.CoverType.Artist)))
             {
-                cover.MouseLeftButtonDown += ClickEvent;
+                cover.MouseLeftButtonDown += GuiDrawing.CoverClickEvent;
             }
         }
-
-        private void ClickEvent(object sender, EventArgs e)
-        {
-            var sendingControl = (Canvas)sender;
-            var mediaItem = (MediaItem)sendingControl.Tag;
-            Constants.WindowMain.ContentSource = new Uri("/Content/Library/DetailView.xaml?id=" + mediaItem.ArtistId, UriKind.Relative);
-        }
-
     }
 }
 
