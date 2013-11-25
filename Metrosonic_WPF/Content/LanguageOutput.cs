@@ -47,6 +47,11 @@ namespace MetroSonic.Content
             /// The login failed short.
             /// </summary>
             public const string LoginFailedShort = "Login Failed!";
+
+            /// <summary>
+            /// Title for playback errors.
+            /// </summary>
+            public const string PlaybackErrorTitle = "Playback Error!";
         }
 
         /// <summary>
@@ -77,6 +82,11 @@ namespace MetroSonic.Content
             /// The movie not supported.
             /// </summary>
             public const string MovieNotSupported = "Sorry Videos arn't supported.";
+
+            /// <summary>
+            /// Title for warning messageboxes.
+            /// </summary>
+            public const string WarningTitle = "Warning";
         }
 
         public struct Notice

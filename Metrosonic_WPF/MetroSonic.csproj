@@ -110,6 +110,8 @@
     </Compile>
     <Compile Include="MediaControl\LibraryManagement.cs" />
     <Compile Include="MediaControl\MediaItem.cs" />
+    <Compile Include="MediaControl\PlaybackControl.cs" />
+    <Compile Include="MediaControl\ReadFullyStream.cs" />
     <Compile Include="MediaControl\SubsonicAccess.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -170,14 +172,6 @@
       <DependentUpon>SettingsAppearance.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Settings\SettingsAppearanceViewModel.cs" />
-    <Page Include="Pages\Home.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Library.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Content\Playback\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -186,12 +180,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="Pages\Home.xaml.cs">
-      <DependentUpon>Home.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Library.xaml.cs">
-      <DependentUpon>Library.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Content\Playback\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>

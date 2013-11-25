@@ -21,19 +21,25 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-
-using System.ComponentModel;
-using System.Windows.Media;
-using FirstFloor.ModernUI.Presentation;
-using MetroSonic.Properties;
+using MetroSonic.MediaControl;
 
 namespace MetroSonic
 {
+    using System.ComponentModel;
+    using System.Windows.Media;
+    using FirstFloor.ModernUI.Presentation;
+    using Properties;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml.
     /// </summary>
     public partial class MainWindow
     {
+        /// <summary>
+        /// The playback control.
+        /// </summary>
+        public readonly PlaybackControl Playback;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
@@ -41,7 +47,7 @@ namespace MetroSonic
         {
             InitializeComponent();
             LoadAppearance();
-
+            Playback = new PlaybackControl();
 
             // ContentSource = new Uri("/View/ContextPage.xaml", UriKind.Relative);
         }
@@ -55,7 +61,7 @@ namespace MetroSonic
             {
                 object convertFromString = ColorConverter.ConvertFromString(Settings.Default.color);
                 if (convertFromString != null)
-                    AppearanceManager.Current.AccentColor = (Color) convertFromString;
+                    AppearanceManager.Current.AccentColor = (Color)convertFromString;
             }
 
             AppearanceManager.Current.FontSize = Settings.Default.fontSize;
@@ -68,23 +74,29 @@ namespace MetroSonic
             Width = Settings.Default.mainWidth;
             Height = Settings.Default.mainHeight;
             WindowState = Settings.Default.mainState;
+            Left = Settings.Default.mainLeft;
+            Top = Settings.Default.mainTop; 
         }
 
         /// <summary>
         /// The window_ closing.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        /// The sending control.
         /// </param>
         /// <param name="e">
-        /// The e.
+        /// The eventarguments.
         /// </param>
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            Playback.StopPlayback();
+            Playback.Dispose();
+
             Settings.Default.mainWidth = Width;
             Settings.Default.mainHeight = Height;
             Settings.Default.mainState = WindowState;
-
+            Settings.Default.mainLeft = Left;
+            Settings.Default.mainTop = Top;
             Settings.Default.Save();
         }
     }

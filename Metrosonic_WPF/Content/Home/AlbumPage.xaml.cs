@@ -21,22 +21,28 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using MetroSonic.Content;
-using MetroSonic.MediaControl;
-
-namespace MetroSonic.Pages.Welcome
+namespace MetroSonic.Content.Home
 {
+    using System;
+    using System.Globalization;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using MediaControl;
+
     /// <summary>
     /// Interaction logic for All.xaml.
     /// </summary>
     public partial class All : UserControl
     {
+        /// <summary>
+        /// The current index / offset for displaying.
+        /// </summary>
         private int _index = 0;
+        
+        /// <summary>
+        /// Button to add something to the playlist.
+        /// </summary>
         private Button _addButton;
         private LibraryManagement.ViewType _type;
 
@@ -65,7 +71,7 @@ namespace MetroSonic.Pages.Welcome
                     break; 
                 case "mostplayed":
                     _type = LibraryManagement.ViewType.Most;
-                    Title.Text = "Most plaed Albums";
+                    Title.Text = "Most played Albums";
                     break; 
                 case "nowplaying":
                     Title.Text = "Now playing Album";
@@ -79,7 +85,7 @@ namespace MetroSonic.Pages.Welcome
         {
             foreach (Canvas cover in LibraryManagement.GetView(_index.ToString(CultureInfo.InvariantCulture), _type).Select(item => GuiDrawing.DrawCover(item.CoverID, WrapPanel, item.TrackName, item, Constants.CoverType.Album)))
             {
-                cover.MouseLeftButtonDown += GuiDrawing.CoverClickEvent;
+                cover.MouseLeftButtonDown += CoverClickEvent;
             }
 
             _addButton = new Button
@@ -102,7 +108,11 @@ namespace MetroSonic.Pages.Welcome
             GetMediaItems();
         }
 
-       
-
+        private static void CoverClickEvent(object sender, EventArgs e)
+        {
+            var sendingControl = (Canvas)sender;
+            var mediaItem = (MediaItem)sendingControl.Tag;
+            Constants.WindowMain.ContentSource = new Uri("/Content/Library/DetailView.xaml?id=" + mediaItem.AlbumID, UriKind.Relative);
+        }
     }
 }

@@ -22,22 +22,26 @@ namespace MetroSonic.Content.Library
     /// </summary>
     public partial class AlbumView : UserControl
     {
+        private MediaItem[] _albumData;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AlbumView"/> class.
+        /// </summary>
         public AlbumView()
         {
             InitializeComponent();
             var param = Constants.GetParameter();
             string id = param.Where(paramater => paramater.Key.ToLower() == "id").FirstOrDefault().Value;
 
-            var albumData = LibraryManagement.GetView(id, LibraryManagement.ViewType.ID);
+            _albumData = LibraryManagement.GetView(id, LibraryManagement.ViewType.ID);
             
             var columnName = new DataGridTextColumn();
             var columnLength = new DataGridTextColumn();
 
-            if (albumData.Length == 0)
+            if (_albumData.Length == 0)
                 return;
 
-            LibraryManagement.CoverDownload(Cover, albumData[0].CoverID, Constants.CoverType.Album);
-            Title.Text = albumData[0].AlbumName + " by " + albumData[0].Artist;
+            LibraryManagement.CoverDownload(Cover, _albumData[0].CoverID, Constants.CoverType.Album);
+            Title.Text = _albumData[0].AlbumName + " by " + _albumData[0].Artist;
 
             columnName.Header = "Name";
             columnName.Binding = new Binding("Name");
@@ -47,8 +51,8 @@ namespace MetroSonic.Content.Library
 
             DataGrid.Columns.Add(columnName);
             DataGrid.Columns.Add(columnLength);
-            
-            foreach (MediaItem item in albumData)
+
+            foreach (MediaItem item in _albumData)
             {
                 TimeSpan itemLength = TimeSpan.FromSeconds(double.Parse(item.TrackDuration));
                 DataGrid.Items.Add(new DataItem
@@ -58,6 +62,17 @@ namespace MetroSonic.Content.Library
                     Rating = null
                 });
             }
+        }
+
+        /// <summary>
+        /// Button click event to add items to the playlist.
+        /// </summary>
+        /// <param name="sender">The sending control.</param>
+        /// <param name="e">The eventparameter.</param>
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (MediaItem item in _albumData)
+                LibraryManagement.PlaylistAddItems(item);
         }
     }
 

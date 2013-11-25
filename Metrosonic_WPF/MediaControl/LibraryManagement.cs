@@ -20,12 +20,14 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Threading;
+
 namespace MetroSonic.MediaControl
 {
     using System.Collections.Generic;
     using System.Windows.Controls;
-    using FirstFloor.ModernUI.Windows.Controls;
     using Content;
+    using FirstFloor.ModernUI.Windows.Controls;
     using Properties;
 
     /// <summary>
@@ -34,6 +36,11 @@ namespace MetroSonic.MediaControl
     public static class LibraryManagement
     {
         /// <summary>
+        /// The current playlist.
+        /// </summary>
+        public static readonly List<MediaItem> CurrentPlaylist = new List<MediaItem>();
+
+        /// <summary>
         /// The skip directions.
         /// </summary>
         public enum SkipDirection
@@ -41,7 +48,7 @@ namespace MetroSonic.MediaControl
             /// <summary>
             /// The next Track will be played.
             /// </summary>
-            Forward, 
+            Forward,
 
             /// <summary>
             /// The last Track will be played.
@@ -57,38 +64,33 @@ namespace MetroSonic.MediaControl
             /// <summary>
             /// Random Albums from the Server.
             /// </summary>
-            Random, 
+            Random,
 
             /// <summary>
             /// The newest Albums from the Server.
             /// </summary>
-            New, 
+            New,
 
             /// <summary>
             /// The now Playing Album.
             /// </summary>
-            Now, 
+            Now,
 
             /// <summary>
             /// The most played Albums.
             /// </summary>
-            Most, 
+            Most,
 
             /// <summary>
             /// All Albums by Name.
             /// </summary>
-            All, 
+            All,
 
             /// <summary>
             /// Get Details of ID.
             /// </summary>
             ID
         }
-
-        /// <summary>
-        /// The current playlist.
-        /// </summary>
-        public static readonly List<MediaItem> CurrentPlaylist = new List<MediaItem>();
 
         /// <summary>
         /// The access to the Subsonic Server.
@@ -105,7 +107,6 @@ namespace MetroSonic.MediaControl
                                     "&v=1.9.0" +
                                     "&c=MetroSonic";
             Access = new SubsonicAccess(authentication, Settings.Default.server);
-
             Folder = Access.Folder;
         }
 
@@ -153,12 +154,21 @@ namespace MetroSonic.MediaControl
         /// <summary>
         /// Queries the login status.
         /// </summary>
+        /// <param name="server">
+        /// The server.
+        /// </param>
+        /// <param name="username">
+        /// The username.
+        /// </param>
+        /// <param name="password">
+        /// The password.
+        /// </param>
         /// <returns>
         /// Return the login status from the server.
         /// </returns>
-        public static bool LoginSuccessfull()
+        public static bool LoginSuccessfull(string server = null, string username = null, string password = null)
         {
-            return Access.LoginSuccesfull();
+            return Access.LoginSuccesfull(username, password, server);
         }
 
         /// <summary>
@@ -270,6 +280,7 @@ namespace MetroSonic.MediaControl
                     if (CurrentIndex + 1 < CurrentPlaylist.Count)
                         CurrentIndex++;
                     break;
+            
             }
         }
 
