@@ -26,26 +26,26 @@
 
                     <TextBlock Text="Server:" VerticalAlignment="Center" Margin="0,0,16,4" />
                     <TextBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,5"
-                             TextChanged="txtServer_TextChanged" Name="TxtServer"
+                             TextChanged="TxtServer_TextChanged" Name="TxtServer"
                              x:FieldModifier="private"
                              />
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Username" VerticalAlignment="Center"
                                Margin="0,0,16,4" />
                     <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,5"
-                             TextChanged="txtUsername_TextChanged" Name="TxtUsername"
+                             TextChanged="TxtUsername_TextChanged" Name="TxtUsername"
                              x:FieldModifier="private" />
                              
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Password" VerticalAlignment="Center"
                                Margin="0,0,16,4" />
                     <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,5"
-                             TextChanged="txtPassword_TextChanged" Name="TxtPassword"
+                             TextChanged="TxtPassword_TextChanged" Name="TxtPassword"
                              x:FieldModifier="private" />
                     
                     <Label Grid.Row="3" Grid.Column="0" Content="" Height="20" />
                     <Button Grid.Row="4" Grid.Column="1" Content="Test Connection" VerticalAlignment="Center"
-                            Margin="0,0,0,4" Click="btTestConnection_Click" />
+                            Margin="0,0,0,4" Click="BtTestConnection_Click" />
                 </Grid>
             </StackPanel>
         </ScrollViewer>

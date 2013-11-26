@@ -43,48 +43,14 @@ namespace MetroSonic
     internal static class Constants
     {
         /// <summary>
-        /// The gap between Controls.
-        /// </summary>
-        public const int ControlGap = 5;
-
-        /*
-                public static int WhiteSpace = 280;
-        */
-
-        /// <summary>
         /// The max cover size.
         /// </summary>
         public const int MaxCoverSize = 300;
 
         /// <summary>
-        /// The max covers.
-        /// </summary>
-        public const float MaxCovers = 4;
-
-        /// <summary>
         /// The last fm api key.
         /// </summary>
-        public const string lastFmApiKey = "0b5c899b0a3b089b49b4c7ee5ffb2abc";
-
-        /// <summary>
-        /// The Height for MetroTiles.
-        /// </summary>
-        private const int Tileheight = 35;
-
-        /// <summary>
-        /// The tilespace between MetroTiles.
-        /// </summary>
-        private const int Tilespace = 2;
-
-        /// <summary>
-        /// The Color of the Dark Buttons.
-        /// </summary>
-        private static readonly Color PrivateButtonsDarkPartsColor = Color.FromArgb(51, 51, 51);
-
-        /// <summary>
-        /// The volume container size.
-        /// </summary>
-        private static readonly Size VolumeContainerSize = new Size(50, 150);
+        public const string LastFmApiKey = "0b5c899b0a3b089b49b4c7ee5ffb2abc";
 
         /// <summary>
         /// The cover path.
@@ -100,53 +66,7 @@ namespace MetroSonic
         /// The MainWindow of the Application.
         /// </summary>
         public static readonly MainWindow WindowMain = (MainWindow) Application.Current.MainWindow;
-
-        /// <summary>
-        /// Gets the tile height.
-        /// </summary>
-        /// <value>
-        /// The tile height.
-        /// </value>
-        public static int TileHeight
-        {
-            get { return Tileheight; }
-        }
-
-        /// <summary>
-        /// Gets the tile space.
-        /// </summary>
-        /// <value>
-        /// The tile space.
-        /// </value>
-        public static int TileSpace
-        {
-            get { return Tilespace + Tileheight; }
-        }
-
-        /// <summary>
-        /// Gets the buttons dark parts color.
-        /// </summary>
-        /// <value>
-        /// The buttons dark parts color.
-        /// </value>
-        public static Color ButtonsDarkPartsColor
-        {
-            get { return PrivateButtonsDarkPartsColor; }
-        }
-
-        /// <summary>
-        /// Gets the volume container size.
-        /// </summary>
-        /// <value>
-        /// The volume container size.
-        /// </value>
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", 
-            Justification = "Reviewed. Suppression is OK here.")]
-// ReSharper disable once InconsistentNaming
-        public static Size volumeContainerSize
-        {
-            get { return VolumeContainerSize; }
-        }
+    
 
         /// <summary>
         /// True if user is logged in.
@@ -231,6 +151,33 @@ namespace MetroSonic
 
             return null;
             //return (from XmlNode node in elemList from XmlAttribute attribute in node.Attributes where attribute.Name == "extralarge" select node).Select(node => node.Value).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets the server url.
+        /// </summary>
+        /// <param name="hostname">
+        /// The hostname.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        internal static string GetServerUrl(string hostname)
+        {
+            if (!hostname.EndsWith("/rest/"))
+            {
+                string apiIdent = "rest/";
+                if (!hostname.EndsWith("/"))
+                    apiIdent = "/" + apiIdent;
+                hostname += apiIdent;
+            }
+
+            const string http = "http://";
+
+            if (!hostname.StartsWith(http))
+                hostname = http + hostname;
+
+            return hostname; 
         }
     }
 }

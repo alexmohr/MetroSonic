@@ -9,8 +9,8 @@
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
             <StackPanel MinWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="Login" Style="{StaticResource Title}" />
-                <TextBlock Text="Trying to log in..." Margin="0,40,0,0" Name="LabelStatus" x:FieldModifier="private" />
+                <TextBlock Text="Login" Style="{StaticResource Title}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Trying to log in..." Margin="0,40,0,0" Name="LabelStatus" x:FieldModifier="private" HorizontalAlignment="Center" />
                 <ProgressBar Height="20" Margin="0,20,10,80" Width="200" IsIndeterminate="True"
                              HorizontalAlignment="Left"/>
             </StackPanel>

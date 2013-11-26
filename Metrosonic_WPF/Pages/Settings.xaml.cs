@@ -75,18 +75,9 @@ namespace MetroSonic.Pages
         {
             Properties.Settings.Default.color = AppearanceManager.Current.AccentColor.ToString();
             Properties.Settings.Default.darkTheme = AppearanceManager.Current.ThemeSource.OriginalString.Contains("Dark");
+            Properties.Settings.Default.server = Constants.GetServerUrl(Properties.Settings.Default.server);
+            
             NavigationCommands.BrowseBack.Execute(null, null);
-            if (!Properties.Settings.Default.server.EndsWith("/rest/"))
-            {
-                string apiIdent = "rest/";
-                if (!Properties.Settings.Default.server.EndsWith("/"))
-                    apiIdent = "/" + apiIdent;
-                Properties.Settings.Default.server += apiIdent;
-            }
-
-            const string http = "http://";
-            if (!Properties.Settings.Default.server.StartsWith(http))
-                Properties.Settings.Default.server = http + Properties.Settings.Default.server; 
 
             Properties.Settings.Default.Save();
             new ModernDialog

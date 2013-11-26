@@ -152,12 +152,25 @@ namespace MetroSonic.MediaControl
         /// <returns>
         /// NULL if everything is ok, else the error message.
         /// </returns>
-        internal bool LoginSuccesfull()
+        internal bool LoginSuccesfull(string username = null, string password = null, string server = null)
         {
             if (string.IsNullOrEmpty(_server))
-                return false; 
+                return false;
 
-            string url = _server + "ping.view?" + _authentication;
+            string auth = _authentication;
+            string srv = _server;
+
+            if (username != null && password != null && server != null)
+            {
+                auth = "&u=" + username +
+                       "&p=" + password +
+                       "&v=1.9.0" +
+                       "&c=MetroSonic";
+
+                srv = server; 
+            }
+            
+            string url = srv + "ping.view?" + auth;
             var doc = new XmlDocument();
             doc.Load(url);
             XmlNodeList elemList = doc.GetElementsByTagName("error");
@@ -250,7 +263,7 @@ namespace MetroSonic.MediaControl
 
 
         /// <summary>
-        /// The get all attributs.
+        /// The get all attributes.
         /// </summary>
         /// <param name="node">
         /// The node.
@@ -357,13 +370,13 @@ namespace MetroSonic.MediaControl
                         XmlAttributeCollection attributeCollection = elemList[i].Attributes;
                         if (attributeCollection != null)
                             items.Add(new MediaItem(
-                                attributeCollection.GetNamedItem("id").Value, // < :)
+                                attributeCollection.GetNamedItem("id").Value,
                                 attributeCollection.GetNamedItem("title").Value, 
                                 attributeCollection.GetNamedItem("album").Value,
                                 coverArt, 
                                 attributeCollection.GetNamedItem("duration").Value,
                                 attributeCollection.GetNamedItem("artist").Value,
-                                attributeCollection.GetNamedItem("artistId").Value, 
+                                attributeCollection.GetNamedItem("artistId").Value,
                                 isDir,
                                 parent,
                                 _server + "stream.view?id=" + attributeCollection.GetNamedItem("id").Value + _authentication));

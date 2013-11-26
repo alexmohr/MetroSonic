@@ -68,17 +68,15 @@ namespace MetroSonic.Content.Welcome
                         {
                             Constants.LoggedIn = true; 
                             LibraryManagement.GetFolder();
-
                             BuildNavigation();
-
                             Constants.WindowMain.ContentSource = new Uri("/Content/Home/AlbumPage.xaml?type=all", UriKind.Relative);
                         });
                 }
                 else
                 {
                     Application.Current.Dispatcher.Invoke(
-                        DispatcherPriority.Normal, 
-                        (ThreadStart)delegate
+                        DispatcherPriority.Normal,
+                        (ThreadStart) delegate
                         {
                             new ModernDialog
                             {

@@ -20,14 +20,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Windows;
-using System.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Controls;
-using MetroSonic.MediaControl;
-
 namespace MetroSonic.Content.Settings
 {
+    using System.Windows;
+    using System.Windows.Controls;
+    using FirstFloor.ModernUI.Windows.Controls;
+    using MediaControl;
+
     /// <summary>
     /// Interaction logic for SettingsNetwork.xaml.
     /// </summary>
@@ -48,12 +47,12 @@ namespace MetroSonic.Content.Settings
         /// The txt server_ text changed.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        /// The sending control.
         /// </param>
         /// <param name="e">
-        /// The e.
+        /// The eventarguments.
         /// </param>
-        private void txtServer_TextChanged(object sender, TextChangedEventArgs e)
+        private void TxtServer_TextChanged(object sender, TextChangedEventArgs e)
         {
             Properties.Settings.Default.server = TxtServer.Text;
         }
@@ -62,12 +61,12 @@ namespace MetroSonic.Content.Settings
         /// The txt username_ text changed.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        /// The sending control.
         /// </param>
         /// <param name="e">
-        /// The e.
+        /// The eventarguments.
         /// </param>
-        private void txtUsername_TextChanged(object sender, TextChangedEventArgs e)
+        private void TxtUsername_TextChanged(object sender, TextChangedEventArgs e)
         {
             Properties.Settings.Default.username = TxtUsername.Text;
         }
@@ -76,41 +75,44 @@ namespace MetroSonic.Content.Settings
         /// The txt password_ text changed.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        /// The sending control.
         /// </param>
         /// <param name="e">
-        /// The e.
+        /// The eventarguments.
         /// </param>
-        private void txtPassword_TextChanged(object sender, TextChangedEventArgs e)
+        private void TxtPassword_TextChanged(object sender, TextChangedEventArgs e)
         {
             Properties.Settings.Default.password = TxtPassword.Text;
         }
 
+        /*
         /// <summary>
         /// The txt password_ password changed.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        /// The sending control.
         /// </param>
         /// <param name="e">
-        /// The e.
+        /// The eventarguments.
         /// </param>
         private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
         }
+        */
 
         /// <summary>
         /// The bt test connection_ click.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        /// The sending control.
         /// </param>
         /// <param name="e">
-        /// The e.
+        /// The eventarguments.
         /// </param>
-        private void btTestConnection_Click(object sender, RoutedEventArgs e)
+        private void BtTestConnection_Click(object sender, RoutedEventArgs e)
         {
-            bool successfull = LibraryManagement.LoginSuccessfull();
+            bool successfull = LibraryManagement.LoginSuccessfull(TxtServer.Text, TxtUsername.Text, TxtPassword.Text);
+
             if (successfull)
                 new ModernDialog()
                 {
