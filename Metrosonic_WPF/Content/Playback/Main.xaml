@@ -33,9 +33,9 @@
 						VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left"
 						Stretch="UniformToFill"  x:Name="Cover"/>
                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Height="35">
-                        <Label Content="-00:00" Width="40" VerticalAlignment="Center" Margin="0,0,5,0" />
-                        <Slider Width="220" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        <Label Content="00:00" Width="40" VerticalAlignment="Center" Margin="5,0,0,0" />
+                        <Label Content="00:00" Width="40" VerticalAlignment="Center" Margin="0,0,5,0" Name="TimePlaying" />
+                        <Slider Width="220" HorizontalAlignment="Center" VerticalAlignment="Center" Name="Slider"  Thumb.DragStarted="SliderInputStart"  Thumb.DragCompleted="SliderInputEnd" />
+                        <Label Content="-00:00" Width="40" VerticalAlignment="Center" Margin="5,0,0,0" Name ="TimeLeft"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Height="50" VerticalAlignment="Center"
 						HorizontalAlignment="Left" Margin="0,20,0,0">
@@ -43,7 +43,7 @@
 							IconWidth="30" IconHeight="30" x:Name="Back"
 							IconData="F1 M 57,27.7083L 57,48.2917L 43.5417,38L 57,27.7083 Z M 39.5833,27.7083L 39.5833,48.2917L 26.125,38L 39.5833,27.7083 Z M 23.75,28.5L 23.75,47.5L 19,47.5L 19,28.5L 23.75,28.5 Z" Click="Back_Click" />
                         <mui:ModernButton Margin="5,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
-							IconWidth="30" IconHeight="30" x:Name="Play"
+							IconWidth="25" IconHeight="25" x:Name="Play"
 							IconData="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z"
 							VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="Play_Click" />
                         <mui:ModernButton Margin="5,0,0,0" EllipseDiameter="48" EllipseStrokeThickness="2"
@@ -62,7 +62,7 @@
 					Grid.RowSpan="2">
                     <DataGrid ColumnWidth="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 						HorizontalContentAlignment="Left" x:Name="DataGrid"
-						VerticalContentAlignment="Stretch" GridLinesVisibility="All" x:FieldModifier="private" Height="Auto">
+						VerticalContentAlignment="Stretch" GridLinesVisibility="None" x:FieldModifier="private" Height="Auto">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Track}" Header="Track" />
                             <DataGridTextColumn Binding="{Binding Album}" Header="Album" />

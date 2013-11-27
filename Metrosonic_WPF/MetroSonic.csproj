@@ -47,11 +47,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
-    <Reference Include="FirstFloor.ModernUI">
-      <HintPath>..\packages\ModernUI.WPF.1.0.5\lib\net45\FirstFloor.ModernUI.dll</HintPath>
+    <Reference Include="FirstFloor.ModernUI, Version=1.0.5.0, Culture=neutral, PublicKeyToken=2d21ec3cd074c59a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libs\FirstFloor.ModernUI.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio">
-      <HintPath>..\..\..\..\SubsonicPlayer\SubsonicPlayer\bin\Debug\NAudio.dll</HintPath>
+    <Reference Include="NAudio, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libs\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="ReachFramework" />
@@ -61,9 +63,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Printing" />
     <Reference Include="System.Windows" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.0.10.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -227,6 +226,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libs\NAudio.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libs\FirstFloor.ModernUI.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -20,6 +20,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Security.Cryptography;
 using System.Threading;
 
 namespace MetroSonic.MediaControl
@@ -93,9 +95,16 @@ namespace MetroSonic.MediaControl
         }
 
         /// <summary>
+        /// The playback control.
+        /// </summary>
+        public static readonly PlaybackControl Playback;
+
+        /// <summary>
         /// The access to the Subsonic Server.
         /// </summary>
         private static readonly SubsonicAccess Access;
+
+        private static readonly List<int> PlayedSongs = new List<int>();
 
         /// <summary>
         /// Initializes static members of the <see cref="LibraryManagement"/> class.
@@ -108,6 +117,8 @@ namespace MetroSonic.MediaControl
                                     "&c=MetroSonic";
             Access = new SubsonicAccess(authentication, Settings.Default.server);
             Folder = Access.Folder;
+
+            Playback = new PlaybackControl();
         }
 
         /// <summary>
@@ -270,17 +281,47 @@ namespace MetroSonic.MediaControl
         /// </param>
         public static void SkipTrack(SkipDirection direction)
         {
-            switch (direction)
+            PlayedSongs.Add(CurrentIndex);
+
+            if (Shuffle)
             {
-                case SkipDirection.Backward:
-                    if (CurrentIndex - 1 > 0)
-                        CurrentIndex--;
-                    break;
-                case SkipDirection.Forward:
-                    if (CurrentIndex + 1 < CurrentPlaylist.Count)
-                        CurrentIndex++;
-                    break;
-            
+                var rnd = new Random();
+                switch (direction)
+                {
+                    case SkipDirection.Forward:
+                        do
+                        {
+                            CurrentIndex = rnd.Next(CurrentPlaylist.Count - 1);
+                        } 
+                        while (PlayedSongs.Contains(CurrentIndex));
+                        break;
+
+                    case SkipDirection.Backward:
+                        if (PlayedSongs.Count > 1)
+                        {
+                            CurrentIndex = PlayedSongs[PlayedSongs.Count - 1];
+                        }
+
+                        break;
+                }
+            }
+            else if (Repeat)
+            {
+
+            }
+            else
+            {
+                switch (direction)
+                {
+                    case SkipDirection.Backward:
+                        if (CurrentIndex - 1 > -1)
+                            CurrentIndex--;
+                        break;
+                    case SkipDirection.Forward:
+                        if (CurrentIndex + 1 < CurrentPlaylist.Count)
+                            CurrentIndex++;
+                        break;
+                }
             }
         }
 

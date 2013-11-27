@@ -23,9 +23,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using FirstFloor.ModernUI.Windows.Controls;
-using MetroSonic.Content;
-using MetroSonic.Pages.Playback;
+using NAudio;
 
 namespace MetroSonic.MediaControl
 {
@@ -33,6 +31,8 @@ namespace MetroSonic.MediaControl
     using System.IO;
     using System.Net;
     using System.Threading;
+    using FirstFloor.ModernUI.Windows.Controls;
+    using Content;
     using NAudio.Wave;
 
     /// <summary>
@@ -74,6 +74,11 @@ namespace MetroSonic.MediaControl
         /// Http request to help download the mp3.
         /// </summary>
         private HttpWebRequest _webRequest;
+
+        /// <summary>
+        /// True if the the track is skipped by the skip method.
+        /// </summary>
+        private bool skippedByMethod = false;
 
         /// <summary>
         /// The streaming playback state.
@@ -133,6 +138,31 @@ namespace MetroSonic.MediaControl
         public VolumeWaveProvider16 VolumeProvider { get; private set; }
 
         /// <summary>
+        /// Raises an event when the playback starts.
+        /// </summary>
+        /// <param name="sender">The sending object.</param>
+        /// <param name="e">The eventargs</param>
+        public delegate void PlaybackStart(object sender, PlaybackStartEventArgs e);
+
+        /// <summary>
+        /// Event for the playback start.
+        /// </summary>
+        public event PlaybackStart PlaybackStarted;
+
+
+        /// <summary>
+        /// Raises an event when the playback starts.
+        /// </summary>
+        /// <param name="sender">The sending object.</param>
+        /// <param name="e">The eventargs</param>
+        public delegate void PlaybackUpdate(object sender, PlaybackUpdateEventArgs e);
+
+        /// <summary>
+        /// Event for the playback start.
+        /// </summary>
+        public event PlaybackUpdate PlaybackStatusUpdate;
+
+        /// <summary>
         /// The wave out playback stopped.
         /// </summary>
         /// <param name="sender">
@@ -152,6 +182,10 @@ namespace MetroSonic.MediaControl
                 }.ShowDialog(); 
             }
         }
+
+        private double _streamPassedSec = 0; 
+
+        public double StreamLength { get; private set; }
 
         /// <summary>
         /// Create the wave player.
@@ -221,6 +255,8 @@ namespace MetroSonic.MediaControl
         /// </summary>
         internal void StopPlayback()
         {
+            skippedByMethod = true;
+
             if (_playbackState == StreamingPlaybackState.Stopped) return;
 
             if (!_fullyDownloaded)
@@ -255,6 +291,9 @@ namespace MetroSonic.MediaControl
         private void StreamMP3(object state)
         {
             _fullyDownloaded = false;
+            _streamPassedSec = 0;
+            StreamLength = LibraryManagement.CurrentPlaylist[LibraryManagement.CurrentIndex].TrackDuration.TotalSeconds;
+
             var url = (string)state;
             _webRequest = (HttpWebRequest)WebRequest.Create(url);
             HttpWebResponse resp;
@@ -341,6 +380,11 @@ namespace MetroSonic.MediaControl
                             {
                                 // Stopped Playback
                             }
+                            catch (MmException)
+                            {
+                                new ModernDialog() { Content = "Corrupt Mp3 file" }.ShowDialog(); 
+                                NextTrack();
+                            }
                         }
                     }
                     while (_playbackState != StreamingPlaybackState.Stopped);
@@ -355,10 +399,12 @@ namespace MetroSonic.MediaControl
                     decompressor.Dispose();
                 }
             }
+            
+            if (skippedByMethod) return;
 
-            //LibraryManagement.SkipTrack(LibraryManagement.SkipDirection.Forward);
-            //_playbackState = StreamingPlaybackState.Stopped;
-            //StartPlayback();
+            LibraryManagement.SkipTrack(LibraryManagement.SkipDirection.Forward);
+            _playbackState = StreamingPlaybackState.Stopped;
+            StartPlayback();
         }
 
         /// <summary>
@@ -366,6 +412,8 @@ namespace MetroSonic.MediaControl
         /// </summary>
         private void PlayUpdate()
         {
+            PlaybackStarted(this, new PlaybackStartEventArgs(LibraryManagement.CurrentPlaylist[LibraryManagement.CurrentIndex]));
+
             while (_keepPlaying)
             {
                 if (_playbackState != StreamingPlaybackState.Stopped)
@@ -398,15 +446,16 @@ namespace MetroSonic.MediaControl
                                 return;
 
                             _waveOut.Play();
-                            // _playbackState = StreamingPlaybackState.Playing;
+                            skippedByMethod = true;
+                            _playbackState = StreamingPlaybackState.Playing;
                         }
-                        else if (_fullyDownloaded && bufferedSeconds > 1)
+                        else if ((_fullyDownloaded && bufferedSeconds > 1) || _streamPassedSec >= StreamLength)
                         {
                             NextTrack();
                         }
 
-                        //if (_playbackState == StreamingPlaybackState.Playing)
-                        //    SetCurrentSongData.UpdateAudioProgress();
+                        _streamPassedSec += 0.25;
+                        PlaybackStatusUpdate(this, new PlaybackUpdateEventArgs(_streamPassedSec));
                     }
                 }
 
@@ -414,11 +463,13 @@ namespace MetroSonic.MediaControl
             }
         }
 
+
         /// <summary>
         /// Skips to the next track.
         /// </summary>
         private void NextTrack()
         {
+            skippedByMethod = true;
             StopPlayback();
             LibraryManagement.SkipTrack(LibraryManagement.SkipDirection.Forward);
             StartPlayback();
@@ -462,5 +513,23 @@ namespace MetroSonic.MediaControl
         //    StartPlayback();
         //}
          */
+    }
+
+    public class PlaybackStartEventArgs
+    {
+        public PlaybackStartEventArgs(MediaItem item)
+        {
+            Item = item;
+        }
+        public MediaItem Item { get; private set; } // readonly
+    }
+
+    public class PlaybackUpdateEventArgs
+    {
+        public PlaybackUpdateEventArgs(double passedSecounds)
+        {
+            PassedSecounds = passedSecounds; 
+        }
+        public double PassedSecounds { get; private set; }
     }
 }

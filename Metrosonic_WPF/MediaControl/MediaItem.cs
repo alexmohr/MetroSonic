@@ -19,6 +19,9 @@
 //   The playlist item.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+using System;
+
 namespace MetroSonic.MediaControl
 {
     /// <summary>
@@ -27,68 +30,12 @@ namespace MetroSonic.MediaControl
     public class MediaItem
     {
         /// <summary>
-        /// Indicates if the Item is a directory.
-        /// </summary>
-        private readonly bool _isDir;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MediaItem"/> class.
-        /// </summary>
-        /// <param name="albumID">
-        /// The album id.
-        /// </param>
-        /// <param name="trackName">
-        /// The track name.
-        /// </param>
-        /// <param name="albumName">
-        /// The album name.
-        /// </param>
-        /// <param name="coverID">
-        /// The cover id.
-        /// </param>
-        /// <param name="trackDuration">
-        /// The track duration.
-        /// </param>
-        /// <param name="artist">
-        /// The artist.
-        /// </param>
-        /// <param name="isDir">
-        /// The is dir.
-        /// </param>
-        /// <param name="parentID">
-        /// The parent id.
-        /// </param>
-        /// <param name="url">
-        /// The url.
-        /// </param>
-        public MediaItem(string albumID, string trackName, string albumName, string coverID, 
-            string trackDuration, string artist, string artistId, bool isDir, string parentID, string url = null)
-        {
-            AlbumID = albumID;
-            TrackName = trackName;
-            AlbumName = albumName;
-            CoverID = coverID;
-            URL = url;
-            TrackDuration = trackDuration;
-            Artist = artist;
-            _isDir = isDir;
-            ParentID = parentID;
-            ArtistId = artistId;
-        }
-
-        public MediaItem(string artist, string artistId)
-        {
-            Artist = artist;
-            ArtistId = artistId; 
-        }
-
-        /// <summary>
         /// Gets the Name of the Artist.
         /// </summary>
         /// <value>
         /// The artist.
         /// </value>
-        public string Artist { get; private set; }
+        public string Artist { get;  set; }
 
         // private string TrackID { get; set; }
 
@@ -98,7 +45,7 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The album id.
         /// </value>
-        public string AlbumID { get; private set; }
+        public string AlbumID { get; set; }
 
         /// <summary>
         /// Gets the track name.
@@ -106,7 +53,7 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The track name.
         /// </value>
-        public string TrackName { get; private set; }
+        public string TrackName { get; set; }
 
         /// <summary>
         /// Gets the album name.
@@ -114,7 +61,7 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The album name.
         /// </value>
-        public string AlbumName { get; private set; }
+        public string AlbumName { get; set; }
 
         /// <summary>
         /// Gets the cover id.
@@ -122,7 +69,7 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The cover id.
         /// </value>
-        public string CoverID { get; private set; }
+        public string CoverID { get; set; }
 
         /// <summary>
         /// Gets the url.
@@ -130,7 +77,7 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The url.
         /// </value>
-        public string URL { get; private set; }
+        public string URL { get; set; }
 
         /// <summary>
         /// Gets the track duration.
@@ -138,7 +85,7 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The track duration.
         /// </value>
-        public string TrackDuration { get; private set; }
+        public TimeSpan TrackDuration { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether is dir.
@@ -146,10 +93,7 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The is dir.
         /// </value>
-        public bool IsDir
-        {
-            get { return _isDir; }
-        }
+        public bool IsDir { get; set; }
 
         /// <summary>
         /// Gets the parent id.
@@ -157,9 +101,9 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The parent id.
         /// </value>
-        public string ParentID { get; private set; }
+        public string ParentID { get; set; }
 
-        public string ArtistId { get; private set; }
+        public string ArtistId { get; set; }
 
         
     }

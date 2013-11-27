@@ -103,7 +103,11 @@ namespace MetroSonic.MediaControl
                 XmlAttributeCollection xmlAttributeCollection = elemList[i].Attributes;
 
                 if (xmlAttributeCollection == null) continue;
-                artistDetails.Add(new MediaItem(xmlAttributeCollection[0].Value, xmlAttributeCollection[1].Value));
+                artistDetails.Add(new MediaItem()
+                {
+                    Artist = xmlAttributeCollection[0].Value,
+                    ArtistId = xmlAttributeCollection[1].Value
+                });
             }
 
             return artistDetails.ToArray();
@@ -140,6 +144,9 @@ namespace MetroSonic.MediaControl
                     break;
                 case LibraryManagement.ViewType.New:
                     url = _server + "getAlbumList.view?type=newest&offset=" + id + _authentication;
+                    break;
+                case LibraryManagement.ViewType.Now:
+                    url = _server + "getMusicDirectory.view?id=" + LibraryManagement.CurrentPlaylist[LibraryManagement.CurrentIndex].AlbumID + _authentication;
                     break;
             }
 
@@ -369,17 +376,21 @@ namespace MetroSonic.MediaControl
                     {
                         XmlAttributeCollection attributeCollection = elemList[i].Attributes;
                         if (attributeCollection != null)
-                            items.Add(new MediaItem(
-                                attributeCollection.GetNamedItem("id").Value,
-                                attributeCollection.GetNamedItem("title").Value, 
-                                attributeCollection.GetNamedItem("album").Value,
-                                coverArt, 
-                                attributeCollection.GetNamedItem("duration").Value,
-                                attributeCollection.GetNamedItem("artist").Value,
-                                attributeCollection.GetNamedItem("artistId").Value,
-                                isDir,
-                                parent,
-                                _server + "stream.view?id=" + attributeCollection.GetNamedItem("id").Value + _authentication));
+                            items.Add(new MediaItem()
+                            {
+                                AlbumID = attributeCollection.GetNamedItem("id").Value,
+                                TrackName = attributeCollection.GetNamedItem("title").Value,
+                                AlbumName = attributeCollection.GetNamedItem("album").Value,
+                                CoverID = coverArt,
+                                TrackDuration = TimeSpan.FromSeconds(double.Parse(attributeCollection.GetNamedItem("duration").Value)),
+                                Artist = attributeCollection.GetNamedItem("artist").Value,
+                                ArtistId = attributeCollection.GetNamedItem("artistId").Value,
+                                IsDir = isDir,
+                                ParentID = parent,
+                                URL =
+                                    _server + "stream.view?id=" + attributeCollection.GetNamedItem("id").Value +
+                                    _authentication + "&format=mp3"
+                            }); 
                     }
                     else
                     {
@@ -398,17 +409,16 @@ namespace MetroSonic.MediaControl
 
                     XmlAttributeCollection xmlAttributeCollection = elemList[i].Attributes;
                     if (xmlAttributeCollection != null)
-                        items.Add(new MediaItem(
-                            xmlAttributeCollection.GetNamedItem("id").Value,
-                            xmlAttributeCollection.GetNamedItem("title").Value,
-                            null,
-                            coverArt,
-                            null,
-                            xmlAttributeCollection.GetNamedItem("artist").Value,
-                            null,
-                            isDir,
-                            parent,
-                            url));
+                        items.Add(new MediaItem()
+                        {
+                            AlbumID = xmlAttributeCollection.GetNamedItem("id").Value,
+                            TrackName = xmlAttributeCollection.GetNamedItem("title").Value,
+                            Artist = xmlAttributeCollection.GetNamedItem("artist").Value,
+                            CoverID = coverArt,
+                            IsDir = isDir,
+                            ParentID = parent,
+                            URL = url
+                        }); 
                 }
             }
 
