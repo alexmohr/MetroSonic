@@ -31,6 +31,8 @@ using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Xml;
 using MetroSonic.MediaControl;
 using Size = System.Drawing.Size;

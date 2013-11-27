@@ -22,7 +22,11 @@ namespace MetroSonic.Content.Library
     /// </summary>
     public partial class AlbumView : UserControl
     {
-        private MediaItem[] _albumData;
+        /// <summary>
+        /// All MediaItems from the album.
+        /// </summary>
+        private readonly MediaItem[] _albumData;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="AlbumView"/> class.
         /// </summary>
@@ -54,11 +58,10 @@ namespace MetroSonic.Content.Library
 
             foreach (MediaItem item in _albumData)
             {
-                TimeSpan itemLength = TimeSpan.FromSeconds(double.Parse(item.TrackDuration));
                 DataGrid.Items.Add(new DataItem
                 {
                     Name = item.TrackName,
-                    Length = itemLength.ToString("mm':'ss"),
+                    Length = item.TrackDuration.ToString("mm':'ss"),
                     Rating = null
                 });
             }

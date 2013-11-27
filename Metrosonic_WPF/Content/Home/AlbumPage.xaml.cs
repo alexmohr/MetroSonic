@@ -21,6 +21,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using FirstFloor.ModernUI.Windows.Controls;
+
 namespace MetroSonic.Content.Home
 {
     using System;
@@ -74,6 +76,17 @@ namespace MetroSonic.Content.Home
                     Title.Text = "Most played Albums";
                     break; 
                 case "nowplaying":
+                    if (LibraryManagement.CurrentPlaylist.Count == 0)
+                    {
+                        new ModernDialog()
+                        {
+                            Title = LanguageOutput.Warnings.WarningTitle,
+                            Content = LanguageOutput.Warnings.PlaylistEmpty
+                        }.ShowDialog();
+                        Constants.WindowMain.ContentSource = new Uri("/Content/Home/AlbumPage.xaml?type=all", UriKind.Relative);
+                        return;
+                    }
+
                     Title.Text = "Now playing Album";
                     _type = LibraryManagement.ViewType.Now;
                     break;

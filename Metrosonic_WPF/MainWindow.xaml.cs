@@ -36,18 +36,12 @@ namespace MetroSonic
     public partial class MainWindow
     {
         /// <summary>
-        /// The playback control.
-        /// </summary>
-        public readonly PlaybackControl Playback;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
         public MainWindow()
         {
             InitializeComponent();
             LoadAppearance();
-            Playback = new PlaybackControl();
 
             // ContentSource = new Uri("/View/ContextPage.xaml", UriKind.Relative);
         }
@@ -89,8 +83,8 @@ namespace MetroSonic
         /// </param>
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            Playback.StopPlayback();
-            Playback.Dispose();
+            LibraryManagement.Playback.StopPlayback();
+            LibraryManagement.Playback.Dispose();
 
             Settings.Default.mainWidth = Width;
             Settings.Default.mainHeight = Height;
