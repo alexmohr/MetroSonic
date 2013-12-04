@@ -8,6 +8,6 @@ All files of this application are licensed under GPL V3. This does not apply to 
 
 
 Used Libraries: <br>
-NAudio: http://naudio.codeplex.com/<br>
-MUI: http://mui.codeplex.com/<br>
+NAudio (Microsoft Public License): http://naudio.codeplex.com/<br>
+MUI (Microsoft Public License): http://mui.codeplex.com/<br>
 
