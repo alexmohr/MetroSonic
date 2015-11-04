@@ -23,13 +23,16 @@
 
 
 using System;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using MetroSonic.MediaControl;
+using MetroSonic.Utils;
 
 namespace MetroSonic.Content.Welcome
 {
@@ -57,7 +60,8 @@ namespace MetroSonic.Content.Welcome
         {
             var login = new Thread(() =>
             {
-                bool success = LibraryManagement.LoginSuccessfull();
+                bool success = LibraryManagement.CanLoginSuccessfully(Properties.Settings.Default.server,
+                    Properties.Settings.Default.username, Properties.Settings.Default.password);
                 if (success)
                 {
                     GetArtists();
@@ -66,7 +70,7 @@ namespace MetroSonic.Content.Welcome
                         DispatcherPriority.Normal,
                         (ThreadStart)delegate
                         {
-                            Constants.LoggedIn = true; 
+                            Constants.LoggedIn = true;
                             LibraryManagement.GetFolder();
                             BuildNavigation();
                             Constants.WindowMain.ContentSource = new Uri("/Content/Home/AlbumPage.xaml?type=all", UriKind.Relative);
@@ -76,16 +80,16 @@ namespace MetroSonic.Content.Welcome
                 {
                     Application.Current.Dispatcher.Invoke(
                         DispatcherPriority.Normal,
-                        (ThreadStart) delegate
-                        {
-                            new ModernDialog
-                            {
-                                Content = LanguageOutput.Errors.LoginFailedLong, 
-                                Title = LanguageOutput.Errors.LoginFailedShort, 
-                            }.ShowDialog();
-                            BuildNavigation();
-                            Constants.WindowMain.ContentSource = new Uri("/Pages/Settings.xaml", UriKind.Relative);
-                        });
+                        (ThreadStart)delegate
+                       {
+                           new ModernDialog
+                           {
+                               Content = LanguageOutput.Errors.LoginFailedLong,
+                               Title = LanguageOutput.Errors.LoginFailedShort,
+                           }.ShowDialog();
+                           BuildNavigation();
+                           Constants.WindowMain.ContentSource = new Uri("/Pages/Settings.xaml", UriKind.Relative);
+                       });
                 }
             });
             login.SetApartmentState(ApartmentState.STA);
@@ -96,36 +100,73 @@ namespace MetroSonic.Content.Welcome
         {
             if (Application.Current == null)
                 return;
-            
+
             Application.Current.Dispatcher.Invoke(
                 DispatcherPriority.Normal,
-                (ThreadStart)delegate{ LabelStatus.Text = LanguageOutput.Notice.GettingArtists;
-                    var init = LibraryManagement.AllArtists; 
+                (ThreadStart)delegate
+                {
+                    LabelStatus.Text = LanguageOutput.Notice.GettingArtists;
+                    var init = LibraryManagement.AllArtists;
                 });
         }
 
         private void GetArtistCovers()
         {
-            Application.Current.Dispatcher.Invoke(
-                DispatcherPriority.Normal,
-                (ThreadStart) delegate
-                {
-                    LabelStatus.Text = LanguageOutput.Notice.GettingArtistsCover;  
-                });
-            for (int i = 0; i < LibraryManagement.Folder.GetLength(0); i++)
+            if ( !Constants.CheckCovers )
             {
-                foreach (MediaItem item in LibraryManagement.AllArtists[i])
-                {
-                    Application.Current.Dispatcher.Invoke(
-                    DispatcherPriority.Normal,
-                    (ThreadStart)delegate
-                    {
-                        LibraryManagement.CoverDownload(new Image(), item.Artist, Constants.CoverType.Artist);
-                    });
-                }    
+                return; 
             }
-        }
 
+
+            const string artistCoverDownload = "Downloading artist covers {0} of {1}";
+            const string albumCoverDownload = "Downloading album covers {0} of {1}";
+
+            //! \todo clean this crap.
+            int index = 0;
+            //.AsParallel().For
+            Parallel.ForEach( LibraryManagement.AllArtists,
+                new ParallelOptions {MaxDegreeOfParallelism = 4}, // limit threads
+                async (artist) =>
+                {
+                    GeneralExtensions.DispatcherHelper(() =>
+                       LabelStatus.Text = String.Format(artistCoverDownload, index, LibraryManagement.AllArtists.Length));
+
+                    MediaItem item = LibraryManagement.AllArtists[index];
+                    await LibraryManagement.CoverDownload(null, Constants.CoverType.Artist);
+                    index++;
+                });
+
+            index = 0; 
+            Parallel.ForEach(LibraryManagement.AllAlbums,
+                new ParallelOptions { MaxDegreeOfParallelism = 4 }, // limit threads
+                (artist) =>
+                {
+                    GeneralExtensions.DispatcherHelper(() =>
+                     LabelStatus.Text = String.Format(albumCoverDownload, index, LibraryManagement.AllAlbums.Length));
+
+                    MediaItem item = LibraryManagement.AllAlbums[index];
+                    LibraryManagement.CoverDownload(null, Constants.CoverType.Album);
+                    index++;
+                });
+
+            //for ( int index = 0; index < LibraryManagement.AllArtists.Length; index++ )
+            //{
+            //    GeneralExtensions.DispatcherHelper(() => 
+            //      LabelStatus.Text = String.Format(coverDownload, index, LibraryManagement.AllArtists.Length)) ;
+
+            //    MediaItem item = LibraryManagement.AllArtists[index];
+            //    LibraryManagement.CoverDownload( new Image(), item.Artist, Constants.CoverType.Artist );
+
+            //    // dunno what this was suposed to do but it crashes. 
+            //    //Application.Current.Dispatcher.Invoke(
+            //    //DispatcherPriority.Normal,
+            //    //(ThreadStart)delegate
+            //    //{
+            //    //    LibraryManagement.CoverDownload(new Image(), item.Artist, Constants.CoverType.Artist);
+            //    //});
+            //    // }    
+            //}
+        }
 
         private void BuildNavigation()
         {
@@ -167,16 +208,16 @@ namespace MetroSonic.Content.Welcome
 
             if (Constants.LoggedIn)
             {
-                for (int i = 0; i < LibraryManagement.Folder.GetLength(0); i++)
-                {
-                    string uri = contentRoot + "/Library/ArtistView.xaml?id=" + i +
-                                 "&name=" + LibraryManagement.Folder[i, 0] + "type=folder";
-                    library.Links.Add(new Link
-                    {
-                        DisplayName = LibraryManagement.Folder[i,0],
-                        Source = new Uri(uri, UriKind.Relative)
-                    });
-                }
+                //for (int i = 0; i < LibraryManagement.Folder.GetLength(0); i++)
+                //{
+                //    string uri = contentRoot + "/Library/ArtistView.xaml?id=" + i +
+                //                 "&name=" + LibraryManagement.Folder[i, 0] + "type=folder";
+                //    library.Links.Add(new Link
+                //    {
+                //        DisplayName = LibraryManagement.Folder[i,0],
+                //        Source = new Uri(uri, UriKind.Relative)
+                //    });
+                //}
             }
 
             playback.Links.Add(new Link

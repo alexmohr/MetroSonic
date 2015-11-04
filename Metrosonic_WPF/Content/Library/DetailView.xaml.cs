@@ -47,18 +47,18 @@ namespace MetroSonic.Content.Library
             var param = Constants.GetParameter();
             string id = param.Where(paramater => paramater.Key.ToLower() == "id").FirstOrDefault().Value;
 
-            _allItems = LibraryManagement.GetView(id, LibraryManagement.ViewType.ID);
-            
-            foreach (MediaItem item in _allItems)
+            // _allItems = LibraryManagement.GetView(id, LibraryManagement.ViewType.ID);
+            if (!Constants.MainDisplayedMediaItem.IsDir)
             {
-                Title.Text = "Albums by " + item.Artist;
-                if (!item.IsDir)
-                {
-                    Constants.WindowMain.ContentSource =
-                        new Uri("/Content/Library/AlbumView.xaml?id=" + id, UriKind.Relative);
-                    return;
-                }
-                Canvas cover = GuiDrawing.DrawCover(item.CoverID, WrapPanel, item.TrackName, item, Constants.CoverType.Album);
+                Constants.WindowMain.ContentSource =
+                    new Uri("/Content/Library/AlbumView.xaml?id=" + id, UriKind.Relative);
+                return;
+            }
+
+            foreach (MediaItem item in LibraryManagement.AllAlbums)
+            {
+                Title.Text = "Albums by " + item.ArtistName;
+                Canvas cover = GuiDrawing.DrawCover(item, WrapPanel, item.TrackName, item, Constants.CoverType.Album);
                 cover.MouseLeftButtonDown += CoverClickEvent;
             }
         }
@@ -76,7 +76,12 @@ namespace MetroSonic.Content.Library
         {
             var sendingControl = (Canvas)sender;
             var mediaItem = (MediaItem)sendingControl.Tag;
-            Constants.WindowMain.ContentSource = mediaItem.IsDir ? new Uri("/Content/Library/DetailView1.xaml?id=" + mediaItem.AlbumID, UriKind.Relative) : new Uri("/Content/Library/AlbumView.xaml?id=" + mediaItem.AlbumID, UriKind.Relative);
+
+            Constants.MainDisplayedMediaItem = mediaItem; 
+
+            Constants.WindowMain.ContentSource = mediaItem.IsDir 
+                ? new Uri("/Content/Library/DetailView1.xaml?id=" + mediaItem.AlbumID, UriKind.Relative) 
+                : new Uri("/Content/Library/AlbumView.xaml?id=" + mediaItem.AlbumID, UriKind.Relative);
         }
 
         /// <summary>

@@ -20,7 +20,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
+using System;
 using MetroSonic.MediaControl;
 
 namespace MetroSonic
@@ -40,10 +40,16 @@ namespace MetroSonic
         /// </summary>
         public MainWindow()
         {
+            this.Initialized += OnInitialized;
             InitializeComponent();
             LoadAppearance();
-
+            
             // ContentSource = new Uri("/View/ContextPage.xaml", UriKind.Relative);
+        }
+
+        private void OnInitialized( object sender, EventArgs eventArgs )
+        {
+            Constants.WindowMain = this; 
         }
 
         /// <summary>

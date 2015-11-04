@@ -20,7 +20,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
+using System.Diagnostics;
+using System.Threading.Tasks;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace MetroSonic.Content.Home
@@ -35,13 +36,13 @@ namespace MetroSonic.Content.Home
     /// <summary>
     /// Interaction logic for All.xaml.
     /// </summary>
-    public partial class All : UserControl
+    public partial class AllPage : UserControl
     {
         /// <summary>
         /// The current index / offset for displaying.
         /// </summary>
-        private int _index = 0;
-        
+       // private int _index = 0;
+
         /// <summary>
         /// Button to add something to the playlist.
         /// </summary>
@@ -49,9 +50,9 @@ namespace MetroSonic.Content.Home
         private LibraryManagement.ViewType _type;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="All"/> class.
+        /// Initializes a new instance of the <see cref="AllPage"/> class.
         /// </summary>
-        public All()
+        public AllPage()
         {
             InitializeComponent();
             var param = Constants.GetParameter();
@@ -62,19 +63,19 @@ namespace MetroSonic.Content.Home
                 case "all":
                     _type = LibraryManagement.ViewType.All;
                     Title.Text = "All Albums";
-                    break; 
+                    break;
                 case "new":
                     _type = LibraryManagement.ViewType.New;
                     Title.Text = "New Albums";
                     break;
-                case "random": 
+                case "random":
                     _type = LibraryManagement.ViewType.Random;
                     Title.Text = "Random Albums";
-                    break; 
+                    break;
                 case "mostplayed":
                     _type = LibraryManagement.ViewType.Most;
                     Title.Text = "Most played Albums";
-                    break; 
+                    break;
                 case "nowplaying":
                     if (LibraryManagement.CurrentPlaylist.Count == 0)
                     {
@@ -91,15 +92,35 @@ namespace MetroSonic.Content.Home
                     _type = LibraryManagement.ViewType.Now;
                     break;
             }
-            GetMediaItems();
+            DrawCovers();
         }
 
-        private void GetMediaItems()
+        private int _loadedAlbums = 0;
+        private const int _albumLoadSize =15;
+        private const int _initialMinimum = 50; 
+
+        private async Task DrawCovers()
         {
-            foreach (Canvas cover in LibraryManagement.GetView(_index.ToString(CultureInfo.InvariantCulture), _type).Select(item => GuiDrawing.DrawCover(item.CoverID, WrapPanel, item.TrackName, item, Constants.CoverType.Album)))
+            var albums = LibraryManagement.AllAlbums;
+            int targetIndex = _loadedAlbums + _albumLoadSize;
+            if (targetIndex > albums.Length)
+                targetIndex = albums.Length;
+
+            for (_loadedAlbums = _loadedAlbums; _loadedAlbums < targetIndex; _loadedAlbums++)
             {
+                MediaItem item = albums[_loadedAlbums];
+                Canvas cover = GuiDrawing.DrawCover(item, WrapPanel, item.TrackName, item, Constants.CoverType.Album);
                 cover.MouseLeftButtonDown += CoverClickEvent;
+                _loadedAlbums++;
             }
+
+            if ( _loadedAlbums < _initialMinimum )
+            {
+                DrawCovers();
+                return; 
+            }
+
+
 
             _addButton = new Button
             {
@@ -112,20 +133,31 @@ namespace MetroSonic.Content.Home
             _addButton.Click += ClickMoreEvent;
 
             WrapPanel.Children.Add(_addButton);
+
         }
 
-        private void ClickMoreEvent(object sender, EventArgs e)
+        private async void ClickMoreEvent(object sender, EventArgs e)
         {
             WrapPanel.Children.Remove(_addButton);
-            _index += 11;
-            GetMediaItems();
+
+            await DrawCovers();
         }
+
+        private static Random rnd = new Random();
 
         private static void CoverClickEvent(object sender, EventArgs e)
         {
             var sendingControl = (Canvas)sender;
             var mediaItem = (MediaItem)sendingControl.Tag;
-            Constants.WindowMain.ContentSource = new Uri("/Content/Library/DetailView.xaml?id=" + mediaItem.AlbumID, UriKind.Relative);
+            Constants.MainDisplayedMediaItem = mediaItem;
+            Constants.WindowMain.ContentSource = new Uri("/Content/Library/DetailView.xaml?id=" + rnd.Next(), UriKind.Relative);
+        }
+
+        private void ScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            
+            if (e.VerticalChange > 0 && e.VerticalOffset > e.ExtentHeight - e.ViewportHeight - (200))
+                ClickMoreEvent(null, null);
         }
     }
 }

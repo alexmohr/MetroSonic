@@ -10,64 +10,66 @@
     <Grid
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		Style="{StaticResource ContentRoot}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <ScrollViewer>
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="350" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-					Grid.ColumnSpan="2">
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Width="350" Height="100">
-                        <TextBlock Text="Name of Song" Style="{StaticResource Title}" Margin="0,0,10,0" x:Name="NameOfSong"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Width="350" Height="100">
+                <TextBlock Text="Name of Song" Style="{StaticResource Title}" Margin="0,0,10,0" x:Name="NameOfSong"
 							x:FieldModifier="private" />
-                        <mui:BBCodeBlock BBCode="[url=/Pages/Introduction.xaml]Name of Album[/url]" Style="{StaticResource Heading2}" Margin="0,10,0,0" x:Name="NameOfAlbum"
+                <TextBlock  Margin="0,10,0,0" x:Name="NameOfAlbum" 
 							x:FieldModifier="private" />
-                        <mui:BBCodeBlock BBCode="[url=/Pages/Introduction.xaml]Name of Artist[/url]" Margin="0,5,0,0" x:Name="NameOfArtist"
+                <TextBlock  Margin="0,5,0,0" x:Name="NameOfArtist" Text="NAME OF ARTIST"
 							x:FieldModifier="private" />
 
+            </StackPanel>
 
-                    </StackPanel>
-                    <Image Width="300" Height="300" Source="C:\Users\alex\Desktop\coverAr.jpg"
+
+            <Image Width="300" Height="300" 
 						VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left"
 						Stretch="UniformToFill"  x:Name="Cover"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Height="35">
-                        <Label Content="00:00" Width="40" VerticalAlignment="Center" Margin="0,0,5,0" Name="TimePlaying" />
-                        <Slider Width="220" HorizontalAlignment="Center" VerticalAlignment="Center" Name="Slider"  Thumb.DragStarted="SliderInputStart"  Thumb.DragCompleted="SliderInputEnd" />
-                        <Label Content="-00:00" Width="40" VerticalAlignment="Center" Margin="5,0,0,0" Name ="TimeLeft"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Height="50" VerticalAlignment="Center"
+            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Height="35">
+                <Label Content="00:00" Width="40" VerticalAlignment="Center" Margin="0,0,5,0" Name="TimePlaying" />
+                <Slider Width="220" HorizontalAlignment="Center" VerticalAlignment="Center" Name="Slider"  Thumb.DragStarted="SliderInputStart"  Thumb.DragCompleted="SliderInputEnd" />
+                <Label Content="-00:00" Width="40" VerticalAlignment="Center" Margin="5,0,0,0" Name ="TimeLeft"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Height="50" VerticalAlignment="Center"
 						HorizontalAlignment="Left" Margin="0,20,0,0">
-                        <mui:ModernButton Margin="10,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
+                <mui:ModernButton Margin="10,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
 							IconWidth="30" IconHeight="30" x:Name="Back"
 							IconData="F1 M 57,27.7083L 57,48.2917L 43.5417,38L 57,27.7083 Z M 39.5833,27.7083L 39.5833,48.2917L 26.125,38L 39.5833,27.7083 Z M 23.75,28.5L 23.75,47.5L 19,47.5L 19,28.5L 23.75,28.5 Z" Click="Back_Click" />
-                        <mui:ModernButton Margin="5,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
+                <mui:ModernButton Margin="5,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
 							IconWidth="25" IconHeight="25" x:Name="Play"
 							IconData="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z"
 							VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="Play_Click" />
-                        <mui:ModernButton Margin="5,0,0,0" EllipseDiameter="48" EllipseStrokeThickness="2"
+                <mui:ModernButton Margin="5,0,0,0" EllipseDiameter="48" EllipseStrokeThickness="2"
 							IconWidth="30" IconHeight="30" x:Name="Forward"
 							IconData="F1 M 19,27.7083L 32.4583,38L 19,48.2917L 19,27.7083 Z M 36.4167,27.7083L 49.875,38L 36.4167,48.2917L 36.4167,27.7083 Z M 52.25,28.5L 57,28.5L 57,47.5L 52.25,47.5L 52.25,28.5 Z" Click="Forward_Click" />
-                        <mui:ModernButton Margin="5,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
+                <mui:ModernButton Margin="5,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
 							IconWidth="30" IconHeight="30" x:Name="Repeat"
 							IconData="F1 M 15.8335,42.75L 15.8334,25.3333L 46.3125,25.3333L 39.5833,19L 49.875,19L 60.1667,28.5L 49.875,38L 39.5833,38L 46.3125,31.6667L 22.1667,31.6667L 22.1667,37.2083L 15.8335,42.75 Z M 60.1667,33.25L 60.1667,50.6667L 29.6875,50.6667L 36.4167,57L 26.125,57L 15.8333,47.5L 26.125,38L 36.4167,38L 29.6875,44.3334L 53.8333,44.3333L 53.8333,38.7917L 60.1667,33.25 Z " Click="Repeat_Click" />
-                        <mui:ModernButton Margin="5,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
+                <mui:ModernButton Margin="5,0,5,0" EllipseDiameter="48" EllipseStrokeThickness="2"
 							IconWidth="30" IconHeight="30" x:Name="Shuffle"
 							IconData="F1 M 14.25,45.9166L 20.5834,45.9167L 39.1874,23.75L 47.8958,23.75L 41.1667,17.4167L 51.4583,17.4167L 61.75,26.9166L 51.4583,36.4167L 41.1667,36.4167L 47.8958,30.0833L 41.1667,30.0833L 22.1667,52.25L 14.25,52.25L 14.25,45.9166 Z M 14.25,30.0833L 14.25,23.75L 22.1667,23.75L 29.6875,32.5243L 26.1226,36.6834L 20.5833,30.0833L 14.25,30.0833 Z M 41.1667,45.9167L 47.8958,45.9167L 41.1666,39.5833L 51.4583,39.5834L 61.75,49.0834L 51.4583,58.5833L 41.1666,58.5833L 47.8958,52.25L 39.1873,52.25L 31.9416,43.6167L 35.5684,39.3854L 41.1667,45.9167 Z " Click="Shuffle_Click"/>
-                    </StackPanel>
-                </StackPanel>
+            </StackPanel>
+        </StackPanel>
 
-                <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,10"
+        <ScrollViewer Grid.Column="1">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+             
+                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,10"
 					Grid.RowSpan="2">
                     <DataGrid ColumnWidth="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-						HorizontalContentAlignment="Left" x:Name="DataGrid"
+						HorizontalContentAlignment="Left" x:Name="DataGrid" IsReadOnly="True"
 						VerticalContentAlignment="Stretch" GridLinesVisibility="None" x:FieldModifier="private" Height="Auto">
+                        
                         <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding Track}" Header="Track" />
-                            <DataGridTextColumn Binding="{Binding Album}" Header="Album" />
-                            <DataGridTextColumn Binding="{Binding Artist}" Header="Artist" />
-                            <DataGridTextColumn Binding="{Binding Length}" Header="Length" />
+                            <DataGridTextColumn Binding="{Binding TrackName}" Header="Track" />
+                            <DataGridTextColumn Binding="{Binding AlbumName}" Header="Album" />
+                            <DataGridTextColumn Binding="{Binding ArtistName}" Header="Artist" />
+                            <DataGridTextColumn Binding="{Binding TrackLength}" Header="Length" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

@@ -49,6 +49,8 @@ namespace MetroSonic
         /// </summary>
         public const int MaxCoverSize = 300;
 
+      
+
         /// <summary>
         /// The last fm api key.
         /// </summary>
@@ -67,13 +69,22 @@ namespace MetroSonic
         /// <summary>
         /// The MainWindow of the Application.
         /// </summary>
-        public static readonly MainWindow WindowMain = (MainWindow) Application.Current.MainWindow;
-    
+        //public static readonly MainWindow WindowMain = (MainWindow) Application.Current.MainWindow;
+        public static MainWindow WindowMain;
+
+        public static bool CheckCovers = true; 
+
 
         /// <summary>
         /// True if user is logged in.
         /// </summary>
         public static bool LoggedIn { get; set; }
+
+        public static MediaItem MainDisplayedMediaItem
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Makes a TimeString from a Double Value.
@@ -119,43 +130,6 @@ namespace MetroSonic
         };
 
         /// <summary>
-        /// Gets the url to the artist picture.
-        /// </summary>
-        /// <param name="coverID"></param>
-        /// <returns></returns>
-        internal static string GetLastFmArtistUrl(string coverID)
-        {
-            string url =
-                string.Format(
-                    "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={0}&api_key=0b5c899b0a3b089b49b4c7ee5ffb2abc",
-                    coverID);
-
-            var doc = new XmlDocument();
-            try
-            {
-                doc.Load(url);
-            }
-            catch (WebException)
-            {
-                return null;
-            }
-
-
-            XmlNodeList elemList = doc.GetElementsByTagName("image");
-            for (int i = 0; i < elemList.Count; i++)
-            {
-                if (elemList[i].Attributes == null) continue;
-                if (elemList[i].Attributes.Cast<XmlAttribute>().Any(attr => attr.Value == "extralarge"))
-                {
-                    return elemList[i].InnerText;
-                }
-            }
-
-            return null;
-            //return (from XmlNode node in elemList from XmlAttribute attribute in node.Attributes where attribute.Name == "extralarge" select node).Select(node => node.Value).FirstOrDefault();
-        }
-
-        /// <summary>
         /// Gets the server url.
         /// </summary>
         /// <param name="hostname">
@@ -181,5 +155,6 @@ namespace MetroSonic
 
             return hostname; 
         }
+
     }
 }

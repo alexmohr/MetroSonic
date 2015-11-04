@@ -25,27 +25,37 @@ namespace MetroSonic.Content.Library
         /// <summary>
         /// All MediaItems from the album.
         /// </summary>
-        private readonly MediaItem[] _albumData;
-        
+        private readonly MediaItem[] _tracks;
+
+        /// <summary>
+        /// All MediaItems from the album.
+        /// </summary>
+        private readonly MediaItem _album;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AlbumView"/> class.
         /// </summary>
         public AlbumView()
         {
             InitializeComponent();
-            var param = Constants.GetParameter();
-            string id = param.Where(paramater => paramater.Key.ToLower() == "id").FirstOrDefault().Value;
+            //var param = Constants.GetParameter();
+            //string id = param.Where(paramater => paramater.Key.ToLower() == "id").FirstOrDefault().Value;
 
-            _albumData = LibraryManagement.GetView(id, LibraryManagement.ViewType.ID);
+            //_albumData = LibraryManagement.AllAlbums; 
+            //_albumData = LibraryManagement.AllAlbums;
+
+
             
+            _album = Constants.MainDisplayedMediaItem;
+            _tracks=  LibraryManagement.GetAlbumTracks( _album );
+
             var columnName = new DataGridTextColumn();
             var columnLength = new DataGridTextColumn();
 
-            if (_albumData.Length == 0)
+            if (_tracks.Length == 0)
                 return;
-
-            LibraryManagement.CoverDownload(Cover, _albumData[0].CoverID, Constants.CoverType.Album);
-            Title.Text = _albumData[0].AlbumName + " by " + _albumData[0].Artist;
+            Cover.Source = new BitmapImage( new Uri( LibraryManagement.CoverDownload(_album,Constants.CoverType.Album ).Result ) ); 
+            Title.Text = _tracks[0].AlbumName + " by " + _tracks[0].ArtistName;
 
             columnName.Header = "Name";
             columnName.Binding = new Binding("Name");
@@ -56,7 +66,7 @@ namespace MetroSonic.Content.Library
             DataGrid.Columns.Add(columnName);
             DataGrid.Columns.Add(columnLength);
 
-            foreach (MediaItem item in _albumData)
+            foreach (MediaItem item in _tracks)
             {
                 DataGrid.Items.Add(new DataItem
                 {
@@ -74,7 +84,7 @@ namespace MetroSonic.Content.Library
         /// <param name="e">The eventparameter.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            foreach (MediaItem item in _albumData)
+            foreach (MediaItem item in _tracks)
                 LibraryManagement.PlaylistAddItems(item);
         }
     }
@@ -86,3 +96,4 @@ namespace MetroSonic.Content.Library
         public string Rating { get; set; }
     }
 }
+

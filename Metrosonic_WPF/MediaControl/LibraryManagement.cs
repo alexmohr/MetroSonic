@@ -21,8 +21,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using MetroSonic.MediaControl.Playback;
 
 namespace MetroSonic.MediaControl
 {
@@ -40,7 +45,18 @@ namespace MetroSonic.MediaControl
         /// <summary>
         /// The current playlist.
         /// </summary>
-        public static readonly List<MediaItem> CurrentPlaylist = new List<MediaItem>();
+        public static List < MediaItem > CurrentPlaylist
+        {
+            get
+            {
+                _currentPlaylist.Clear();
+                foreach (var song in LibraryManagement.Playback.GetCurrentPlaylist())
+                {
+                    _currentPlaylist.Add(song);
+                }
+                return _currentPlaylist;
+            }
+        }
 
         /// <summary>
         /// The skip directions.
@@ -97,29 +113,37 @@ namespace MetroSonic.MediaControl
         /// <summary>
         /// The playback control.
         /// </summary>
-        public static readonly PlaybackControl Playback;
+        public static readonly PlaybackControlBase Playback;
 
         /// <summary>
         /// The access to the Subsonic Server.
         /// </summary>
-        private static readonly SubsonicAccess Access;
+        private static readonly MediaAccessBase Access;
 
         private static readonly List<int> PlayedSongs = new List<int>();
+
+        
+
 
         /// <summary>
         /// Initializes static members of the <see cref="LibraryManagement"/> class.
         /// </summary>
         static LibraryManagement()
         {
-            string authentication = "&u=" + Settings.Default.username +
-                                    "&p=" + Settings.Default.password +
-                                    "&v=1.9.0" +
-                                    "&c=MetroSonic";
-            Access = new SubsonicAccess(authentication, Settings.Default.server);
-            Folder = Access.Folder;
+            
+            Access = new MpdAccess();
+            Playback = new MpdPlaybackControl();
+            
+            
 
-            Playback = new PlaybackControl();
         }
+
+        public static void Init()
+        {
+            foreach (var item in Playback.GetCurrentPlaylist())
+                PlaylistAddItems(item);
+        }
+
 
         /// <summary>
         /// Inidicates if the playlist is shuffeld.
@@ -150,17 +174,32 @@ namespace MetroSonic.MediaControl
         /// </summary>
         public static string[,] Folder { get; private set; }
 
-        private static MediaItem[][] _allArtists;
-        public static MediaItem[][] AllArtists
+        private static MediaItem[] _allArtists;
+        public static MediaItem[] AllArtists
         {
             get
             {
                if (_allArtists == null)
-                    SetAllArtists();
+                    GetAllArtists();
                 return _allArtists;
             }
         }
-       
+
+        private static MediaItem[] _allAlbums;
+        public static MediaItem[] AllAlbums
+        {
+            get
+            {
+                if (_allAlbums == null)
+                    _allAlbums =  GetAllAlbums();
+                return _allAlbums;
+            }
+        }
+
+        public static MediaItem[] GetAlbumTracks( MediaItem album )
+        {
+            return Access.GetTracks( album ); 
+        }
 
         /// <summary>
         /// Queries the login status.
@@ -177,58 +216,47 @@ namespace MetroSonic.MediaControl
         /// <returns>
         /// Return the login status from the server.
         /// </returns>
-        public static bool LoginSuccessfull(string server = null, string username = null, string password = null)
+        public static bool CanLoginSuccessfully(string server, string username, string password)
         {
-            return Access.LoginSuccesfull(username, password, server);
-        }
-
-        /// <summary>
-        /// Downloads the Artists from given ID.
-        /// </summary>
-        /// <param name="folderID">
-        /// The folderID of the Artist.
-        /// </param>
-        /// <returns>
-        /// String array with all artists in the folder.
-        /// </returns>
-        public static MediaItem[] GetArtists(string folderID)
-        {
-            return Access.GetArtists(folderID);
-        }
-
-        private static void SetAllArtists()
-        {
-            if (Folder == null)
-                GetFolder();
-
-            if (Folder == null) return;
-
-            int folderCount = Folder.GetLength(0); 
-
-            _allArtists = new MediaItem[folderCount][];
-
-            for (int i = 0; i < folderCount; i++)
+            bool canLogin; 
+            try
             {
-                _allArtists[i] = GetArtists(Folder[i, 1]);
+                canLogin= Access.Login(username, password, server, 6600);
             }
+            catch (Exception e )
+            {
+                return false; 
+            }
+
+            return canLogin; 
         }
 
-        /// <summary>
-        /// Downloads a view from the server.
-        /// </summary>
-        /// <param name="id">
-        /// The ID to download.
-        /// </param>
-        /// <param name="type">
-        /// The viewtype.
-        /// </param>
-        /// <returns>
-        /// Playlistem array with all data.
-        /// </returns>
-        public static MediaItem[] GetView(string id, ViewType type)
+        
+
+        private static void GetAllArtists()
         {
-            return Access.GetView(id, type);
+            _allArtists = Access.GetArtists();
+            
+            //_allArtists = new MediaItem[1][] { };
+
         }
+
+        //{
+        //    if (Folder == null)
+        //        GetFolder();
+
+        //    if (Folder == null) return;
+
+        //    int folderCount = Folder.GetLength(0); 
+
+        //    _allArtists = new MediaItem[folderCount][];
+
+        //    for (int i = 0; i < folderCount; i++)
+        //    {
+        //        _allArtists[i] = GetArtists(Folder[i, 1]);
+        //    }
+        //}
+
 
         /// <summary>
         /// Toggles the Shuffle Playback.
@@ -246,6 +274,9 @@ namespace MetroSonic.MediaControl
             Repeat = !Repeat;
         }
 
+        private static bool _initialized = false;
+        private static readonly List < MediaItem > _currentPlaylist = new List < MediaItem >();
+
         /// <summary>
         /// Gets the Subsonic URL of the Current Track.
         /// </summary>
@@ -254,15 +285,17 @@ namespace MetroSonic.MediaControl
         /// </returns>
         public static string PlaylistGetCurrentTrackURL()
         {
-            if (CurrentPlaylist.Count != 0)
-                return CurrentIndex < CurrentPlaylist.Count ? CurrentPlaylist[CurrentIndex].URL : null;
-
-            new ModernDialog
+            if ( CurrentPlaylist.Count == 0 )
             {
-                Title = "Warning", 
-                Content = LanguageOutput.Warnings.PlaylistEmpty
-            }.ShowDialog();
-            return null;
+                new ModernDialog
+                {
+                    Title = "Warning",
+                    Content = LanguageOutput.Warnings.PlaylistEmpty
+                }.ShowDialog();
+                return null;
+            }
+
+            return CurrentIndex < CurrentPlaylist.Count ? CurrentPlaylist[CurrentIndex].URL : null;
         }
 
         /// <summary>
@@ -323,33 +356,16 @@ namespace MetroSonic.MediaControl
                         break;
                 }
             }
+
+            Playback.Next();
         }
 
         public static void GetFolder()
         {
-            Access.InitilazieFolder();
-            Folder = Access.Folder;
+          //  Access.GetLib
+            //Folder = Access.Folder;
         }
-        ////public static PlaylistItem[] GetRandomAlbums(int Count, string Genre = "*", string YearFrom = "*", string YearTo = "*")
-        ////{
-        ////    //return Access.GetRandomAlbums(Count, Genre, YearFrom, YearTo); 
-        ////}
-        ////public static string[,] GetNewestAlbums(int Offset)
-        ////{
-        ////    return Access.GetNewest(Offset); 
-        ////}
-        ////public static string[,] GetAllAlbums(int Offset)
-        ////{
-        ////}
-        ////public static string[,] GetNowPlaying()
-        ////{
-        ////    return Access.GetView(CurrentPlaylist[CurrentIndex].AlbumID); 
-        ////}
-        ////public static string[,] GetMostAlbums(int Offset)
-        ////{
-        ////    return Access.GetMostPlayed(Offset);
-        ////}
-
+        
         /// <summary>
         /// The cover download.
         /// </summary>
@@ -362,9 +378,10 @@ namespace MetroSonic.MediaControl
         /// <param name="drawReflection">
         /// Draw a Coverreflection.
         /// </param>
-        internal static void CoverDownload(Image coverBox, string id, Constants.CoverType coverType)
+        internal async static Task<string> CoverDownload(MediaItem item, Constants.CoverType coverType)
         {
-            Access.SetCoverArt(coverBox, id, coverType);
+            var x = Access.GetCoverArtPath( item, coverType );
+            return x;
         }
 
         /// <summary>
@@ -375,32 +392,45 @@ namespace MetroSonic.MediaControl
         /// </param>
         public static void PlaylistAddItems(MediaItem item)
         {
-            if (item.IsDir)
-            {
-                AddDir(item.AlbumID);
-            }
-            else
-            {
-                CurrentPlaylist.Add(item);
-            }
+            //if (item.IsDir)
+            //{
+            //    AddDir(item.AlbumID);
+            //}
+            //else
+            //{
+            //    CurrentPlaylist.Add(item);
+            //}
+            CurrentPlaylist.Add(item);
+            Playback.AddToPlaylist( item );
+
         }
 
-        /// <summary>
-        /// Adds a whole Directory to the Playlist.
-        /// </summary>
-        /// <param name="id">
-        /// The id of the directory to add.
-        /// </param>
-        private static void AddDir(string id)
+        ///// <summary>
+        ///// Adds a whole Directory to the Playlist.
+        ///// </summary>
+        ///// <param name="id">
+        ///// The id of the directory to add.
+        ///// </param>
+        //private static void AddDir(string id)
+        //{
+        //    MediaItem[] items = GetView(id, ViewType.ID);
+        //    foreach (MediaItem item in items)
+        //    {
+        //        if (item.IsDir)
+        //            AddDir(item.AlbumID);
+        //        else
+        //            PlaylistAddItems(item);
+        //    }
+        //}
+        public static MediaItem[] GetAllAlbums()
         {
-            MediaItem[] items = GetView(id, ViewType.ID);
-            foreach (MediaItem item in items)
-            {
-                if (item.IsDir)
-                    AddDir(item.AlbumID);
-                else
-                    PlaylistAddItems(item);
-            }
+            return Access.GetAllAbums();
+        }
+
+        public static void PlayListClear()
+        {
+            CurrentPlaylist.Clear();
+            CurrentIndex = 0; 
         }
     }
 }

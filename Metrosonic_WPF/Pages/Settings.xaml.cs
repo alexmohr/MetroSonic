@@ -75,7 +75,7 @@ namespace MetroSonic.Pages
         {
             Properties.Settings.Default.color = AppearanceManager.Current.AccentColor.ToString();
             Properties.Settings.Default.darkTheme = AppearanceManager.Current.ThemeSource.OriginalString.Contains("Dark");
-            Properties.Settings.Default.server = Constants.GetServerUrl(Properties.Settings.Default.server);
+            Properties.Settings.Default.server = Properties.Settings.Default.server;
             
             NavigationCommands.BrowseBack.Execute(null, null);
 

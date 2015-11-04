@@ -22,6 +22,9 @@
 
 
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using MetroSonic.MediaControl.Playback;
 
 namespace MetroSonic.Pages.Playback
 {
@@ -49,6 +52,10 @@ namespace MetroSonic.Pages.Playback
         /// </summary>
         public Main()
         {
+            LibraryManagement.PlayListClear(); 
+            
+
+
             if (LibraryManagement.CurrentPlaylist.Count == 0)
             {
                 Constants.WindowMain.ContentSource = new Uri("/Content/Home/AlbumPage.xaml?type=all", UriKind.Relative);
@@ -62,11 +69,12 @@ namespace MetroSonic.Pages.Playback
             InitializeComponent();
             LibraryManagement.Playback.PlaybackStarted += PlaybackOnPlaybackStarted;
             LibraryManagement.Playback.PlaybackStatusUpdate += PlaybackUpdateEvent;
+
         }
 
         private void PlaybackOnPlaybackStarted(object sender, PlaybackStartEventArgs playbackStartEventArgs)
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart) SetSongData);
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)SetSongData);
         }
 
         private void PlaybackUpdateEvent(object sender, PlaybackUpdateEventArgs e)
@@ -86,7 +94,7 @@ namespace MetroSonic.Pages.Playback
                         .TrackDuration.Subtract(
                             TimeSpan.FromSeconds(e.PassedSecounds)).ToString("mm':'ss");
                 });
-        }   
+        }
 
         /// <summary>
         /// Updates the datagrid and button colors.
@@ -102,18 +110,12 @@ namespace MetroSonic.Pages.Playback
             Repeat.Foreground = LibraryManagement.Shuffle ? new SolidColorBrush(AppearanceManager.Current.AccentColor) : Play.Foreground;
             Shuffle.Foreground = LibraryManagement.Shuffle ? new SolidColorBrush(AppearanceManager.Current.AccentColor) : Play.Foreground;
 
-           SetSongData();
+            SetSongData();
+            DataGrid.Items.Clear();
 
             foreach (var item in LibraryManagement.CurrentPlaylist)
             {
-                DataGrid.Items.Add(new DataItem
-                {
-                    Track = item.TrackName,
-                    Length = item.TrackDuration.ToString("mm':'ss"),
-                    //Rating = null,
-                    Album = item.AlbumName,
-                    Artist = item.Artist
-                });
+                DataGrid.Items.Add( item ); 
             }
         }
 
@@ -130,8 +132,8 @@ namespace MetroSonic.Pages.Playback
         {
             LibraryManagement.Playback.TogglePlayBack();
 
-            if (LibraryManagement.Playback.PlaybackState == PlaybackControl.StreamingPlaybackState.Buffering ||
-                LibraryManagement.Playback.PlaybackState == PlaybackControl.StreamingPlaybackState.Playing)
+            if (LibraryManagement.Playback.PlaybackState == PlaybackControlBase.StreamingPlaybackState.Buffering ||
+                LibraryManagement.Playback.PlaybackState == PlaybackControlBase.StreamingPlaybackState.Playing)
             {
                 Play.IconData =
                     Geometry.Parse(
@@ -217,15 +219,41 @@ namespace MetroSonic.Pages.Playback
         public void SetSongData()
         {
             var currentItem = LibraryManagement.CurrentPlaylist[LibraryManagement.CurrentIndex];
-            LibraryManagement.CoverDownload(Cover, currentItem.CoverID, Constants.CoverType.Album);
+            var imagePath = LibraryManagement.CoverDownload(currentItem, Constants.CoverType.Album).Result;
+            Cover.Source = new BitmapImage( new Uri( imagePath ) );
+
+            NameOfArtist.Text = currentItem.ArtistName; 
             NameOfSong.Text = currentItem.TrackName;
-            NameOfAlbum.BBCode = string.Format("[url=/Content/Library/AlbumView.xaml?id={0}]{1}[/url]", currentItem.CoverID, currentItem.AlbumName);
-            NameOfArtist.BBCode = string.Format("[url=/Content/Library/DetailView.xaml?id={0}]{1}[/url]", currentItem.ParentID, currentItem.Artist);
+            NameOfAlbum.Text = currentItem.AlbumName;
+            //NameOfAlbum.BBCode = string.Format("[url=/Content/Library/AlbumView.xaml?id={0}]{1}[/url]", currentItem.CoverID, currentItem.AlbumName);
+            //NameOfArtist.BBCode = string.Format("[url=/Content/Library/DetailView.xaml?id={0}]{1}[/url]", currentItem.ParentID, currentItem.ArtistName);
+            NameOfArtist.MouseUp += delegate( object sender, MouseButtonEventArgs args )
+            {
+                Constants.MainDisplayedMediaItem = LibraryManagement.CurrentPlaylist[LibraryManagement.CurrentIndex];
+                Constants.WindowMain.ContentSource = new Uri("/Content/Home/AlbumPage.xaml?type=all", UriKind.Relative);
+            };
+
+            SelectCurrentSong( currentItem );
 
             TimeLeft.Content = currentItem.TrackDuration.ToString("mm':'ss");
             TimePlaying.Content = TimeSpan.FromSeconds(LibraryManagement.Playback.StreamLength).ToString("mm':'ss");
             Slider.Maximum = LibraryManagement.Playback.StreamLength;
-            Slider.Value = 0; 
+            Slider.Value = 0;
+        }
+
+        private void SelectCurrentSong( MediaItem currentItem )
+        {
+            if ( DataGrid.Items != null )
+            {
+                foreach ( MediaItem item in DataGrid.Items)
+                {
+                    if ( item.Id == currentItem.Id )
+                    {
+                        DataGrid.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
         }
 
         private void SliderInputStart(object sender, DragStartedEventArgs e)
@@ -236,16 +264,16 @@ namespace MetroSonic.Pages.Playback
 
         private void SliderInputEnd(object sender, DragCompletedEventArgs e)
         {
-            _SliderDisableUpdate = false; 
+            _SliderDisableUpdate = false;
         }
     }
 
-    class DataItem
-    {
-        public string Track { get; set; }
-        public string Album { get; set; }
-        public string Artist { get; set; }
-        public string Length { get; set; }
-        public string Rating { get; set; }
-    }
+    //class DataItem
+    //{
+    //    public string Track { get; set; }
+    //    public string Album { get; set; }
+    //    public string Artist { get; set; }
+    //    public string Length { get; set; }
+    //    public string Rating { get; set; }
+    //}
 }

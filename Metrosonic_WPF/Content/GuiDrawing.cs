@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using MetroSonic.MediaControl;
 using MetroSonic.Utils;
 
@@ -14,7 +15,7 @@ namespace MetroSonic.Content
 {
     class GuiDrawing
     {
-        public static Canvas DrawCover(string coverId, WrapPanel targetPanel, string Text, MediaItem tag, Constants.CoverType coverType)
+        public static Canvas DrawCover(MediaItem item, WrapPanel targetPanel, string Text, MediaItem tag, Constants.CoverType coverType)
         {
             var displayedCanvas = new Canvas()
             {
@@ -23,16 +24,20 @@ namespace MetroSonic.Content
                 Margin = new Thickness(10, 10, 0, 0)
             };
 
+            var imagePath =
+                LibraryManagement.CoverDownload(item, coverType).Result;
+
             var cover = new Image()
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Stretch = Stretch.UniformToFill,
                 Width = 250,
-                Height = 250
+                Height = 250,
+                Source = new BitmapImage(new Uri(imagePath))
             };
 
-            LibraryManagement.CoverDownload(cover, coverId, coverType);
+
 
             var label = new TextBlock
             {

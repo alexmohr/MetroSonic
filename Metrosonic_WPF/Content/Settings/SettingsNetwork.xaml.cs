@@ -111,7 +111,7 @@ namespace MetroSonic.Content.Settings
         /// </param>
         private void BtTestConnection_Click(object sender, RoutedEventArgs e)
         {
-            bool successfull = LibraryManagement.LoginSuccessfull(TxtServer.Text, TxtUsername.Text, TxtPassword.Text);
+            bool successfull = LibraryManagement.CanLoginSuccessfully(TxtServer.Text, TxtUsername.Text, TxtPassword.Text);
 
             if (successfull)
                 new ModernDialog()

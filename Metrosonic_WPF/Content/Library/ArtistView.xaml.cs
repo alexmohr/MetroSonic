@@ -18,12 +18,14 @@
             InitializeComponent();
             var param = Constants.GetParameter();
 
-            int folderId = int.Parse(param.Where(paramater => paramater.Key.ToLower() == "id").FirstOrDefault().Value);
+            LibraryManagement.GetAllAlbums(); 
 
-            foreach (Canvas cover in LibraryManagement.AllArtists[folderId].Select(item => GuiDrawing.DrawCover(item.Artist, WrapPanel, item.Artist, item, Constants.CoverType.Artist)))
-            {
-                cover.MouseLeftButtonDown += CoverClickEvent;
-            }
+            //int folderId = int.Parse(param.Where(paramater => paramater.Key.ToLower() == "id").FirstOrDefault().Value);
+
+            //foreach (Canvas cover in LibraryManagement.AllArtists[folderId].Select(item => GuiDrawing.DrawCover(item.Artist, WrapPanel, item.Artist, item, Constants.CoverType.Artist)))
+            //{
+            //    cover.MouseLeftButtonDown += CoverClickEvent;
+            //}
         }
         
         /// <summary>

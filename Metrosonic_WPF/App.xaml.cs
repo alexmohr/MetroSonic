@@ -20,8 +20,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
-
+using System;
+using System.Linq;
 using System.Windows;
 
 namespace MetroSonic
@@ -31,6 +31,19 @@ namespace MetroSonic
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            Startup += OnStartup;
+        }
+
+        private void OnStartup( object sender, StartupEventArgs args )
+        {
+            if (args.Args.Any(x => x.ToLower() == "/disablecoverhheck"))
+            {
+                Constants.CheckCovers = false;
+            }
+        }
+
         /// <summary>
         /// The on exit.
         /// </summary>

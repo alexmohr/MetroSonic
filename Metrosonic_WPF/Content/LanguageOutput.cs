@@ -95,7 +95,7 @@ namespace MetroSonic.Content
             public const string GettingArtists = "Getting Artist and Folder List.";
 
             public const string GettingArtistsCover =
-                "Gettings Cover of all Artist this will take a while and the programm will freeze";
+                "Gettings Cover of all Artist this will may feel like forever";
         }
     }
 }

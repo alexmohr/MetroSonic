@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroSonic", "Metrosonic_WPF\MetroSonic.csproj", "{C5B41995-B7A5-4C74-98C4-DB5CCE6A0972}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libmpc", "libmpc\libmpc.csproj", "{37031E5C-46CC-4229-BE2D-F4A1F094AEED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,10 @@ Global
 		{C5B41995-B7A5-4C74-98C4-DB5CCE6A0972}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5B41995-B7A5-4C74-98C4-DB5CCE6A0972}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5B41995-B7A5-4C74-98C4-DB5CCE6A0972}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37031E5C-46CC-4229-BE2D-F4A1F094AEED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37031E5C-46CC-4229-BE2D-F4A1F094AEED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37031E5C-46CC-4229-BE2D-F4A1F094AEED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37031E5C-46CC-4229-BE2D-F4A1F094AEED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

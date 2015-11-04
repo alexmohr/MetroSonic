@@ -42,7 +42,9 @@ namespace MetroSonic.MediaControl
     /// <summary>
     /// Access class to the subsonic Server.
     /// </summary>
-    internal class SubsonicAccess
+    [Obsolete("This interface is not supported anymore." +
+              "Try to use an mpd client.")]
+    internal class SubsonicAccess_dep
     {
         /// <summary>
         /// The authentication string used in the subsonic url.
@@ -65,7 +67,7 @@ namespace MetroSonic.MediaControl
         /// <param name="srv">
         /// The Subsonic Server.
         /// </param>
-        internal SubsonicAccess(string auth, string srv)
+        internal SubsonicAccess_dep(string auth, string srv)
         {
             _server = srv;
             _authentication = auth;
@@ -105,7 +107,7 @@ namespace MetroSonic.MediaControl
                 if (xmlAttributeCollection == null) continue;
                 artistDetails.Add(new MediaItem()
                 {
-                    Artist = xmlAttributeCollection[0].Value,
+                    ArtistName = xmlAttributeCollection[0].Value,
                     ArtistId = xmlAttributeCollection[1].Value
                 });
             }
@@ -224,7 +226,7 @@ namespace MetroSonic.MediaControl
             }
 
             if (coverType == Constants.CoverType.Artist)
-                url = Constants.GetLastFmArtistUrl(coverID);
+                url = LastFm.GetLastFmArtistUrl(coverID);
 
             if (string.IsNullOrEmpty(url))
                url = _server + "getCoverArt.view?id=" + "1" + _authentication + "size=" + Constants.MaxCoverSize;
@@ -383,7 +385,7 @@ namespace MetroSonic.MediaControl
                                 AlbumName = attributeCollection.GetNamedItem("album").Value,
                                 CoverID = coverArt,
                                 TrackDuration = TimeSpan.FromSeconds(double.Parse(attributeCollection.GetNamedItem("duration").Value)),
-                                Artist = attributeCollection.GetNamedItem("artist").Value,
+                                ArtistName = attributeCollection.GetNamedItem("artist").Value,
                                 ArtistId = attributeCollection.GetNamedItem("artistId").Value,
                                 IsDir = isDir,
                                 ParentID = parent,
@@ -413,7 +415,7 @@ namespace MetroSonic.MediaControl
                         {
                             AlbumID = xmlAttributeCollection.GetNamedItem("id").Value,
                             TrackName = xmlAttributeCollection.GetNamedItem("title").Value,
-                            Artist = xmlAttributeCollection.GetNamedItem("artist").Value,
+                            ArtistName = xmlAttributeCollection.GetNamedItem("artist").Value,
                             CoverID = coverArt,
                             IsDir = isDir,
                             ParentID = parent,

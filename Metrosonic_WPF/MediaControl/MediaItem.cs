@@ -35,7 +35,7 @@ namespace MetroSonic.MediaControl
         /// <value>
         /// The artist.
         /// </value>
-        public string Artist { get;  set; }
+        public string ArtistName { get;  set; }
 
         // private string TrackID { get; set; }
 
@@ -105,6 +105,16 @@ namespace MetroSonic.MediaControl
 
         public string ArtistId { get; set; }
 
-        
+        public int Id
+        {
+            get;
+            set;
+        }
+
+        public string FileName
+        {
+            get;
+            set;
+        }
     }
 }
